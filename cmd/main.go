@@ -1,8 +1,10 @@
 package main
 
 import (
+	"context"
 	"log"
 	"net/http"
+	"time"
 
 	"github.com/gorilla/mux"
 	"github.com/iamnotrodger/art-house-api/internal/handler"
@@ -15,6 +17,19 @@ func main() {
 	if err != nil {
 		log.Println("Error loading .env file")
 	}
+
+	ctx, _ := context.WithTimeout(context.Background(), 10*time.Second)
+	client, err := util.MongoConnect(ctx)
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer client.Disconnect(ctx)
+
+	dbName, err := util.GetDatabaseName()
+	if err != nil {
+		log.Fatal(err)
+	}
+	db := client.Database(dbName)
 
 	port := util.GetPort()
 	router := mux.NewRouter().StrictSlash(true)
