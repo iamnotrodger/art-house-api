@@ -36,6 +36,8 @@ func main() {
 	router.Use(handler.LoggingMiddleware)
 
 	router.HandleFunc("/api/health", handler.Health).Methods("GET")
+	router.Handle("/api/artist", handler.GetArtists(db)).Methods("GET")
+	router.Handle("/api/artist/{id}/artwork", handler.GetArtistArtworks(db)).Methods("GET")
 
 	log.Println("API Started. Listening on", port)
 	log.Fatal(http.ListenAndServe(port, router))
