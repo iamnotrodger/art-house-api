@@ -3,6 +3,7 @@ package model
 import (
 	"context"
 
+	"github.com/iamnotrodger/art-house-api/internal/util"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
@@ -41,24 +42,8 @@ func GetArtistArtworks(db *mongo.Database, id primitive.ObjectID) ([]Artwork, er
 
 	match := bson.D{{Key: "$match", Value: bson.M{"artist": id}}}
 	unset := bson.D{{Key: "$unset", Value: "description"}}
-	lookup := bson.D{
-		{Key: "$lookup",
-			Value: bson.D{
-				{Key: "from", Value: "artists"},
-				{Key: "localField", Value: "artist"},
-				{Key: "foreignField", Value: "_id"},
-				{Key: "as", Value: "artist"},
-			},
-		}}
-	unwind := bson.D{
-		{Key: "$unwind",
-			Value: bson.D{
-				{Key: "path", Value: "$artist"},
-				{Key: "preserveNullAndEmptyArrays", Value: false},
-			},
-		}}
 
-	pipeline := mongo.Pipeline{match, unset, lookup, unwind}
+	pipeline := mongo.Pipeline{match, unset, util.ArtworkLookup, util.ArtworkUnwind}
 	cursor, err := db.Collection("artworks").Aggregate(context.TODO(), pipeline)
 	if err != nil {
 		return nil, err
