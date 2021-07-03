@@ -66,3 +66,14 @@ func FindArtistArtworks(db *mongo.Database, id primitive.ObjectID, options ...bs
 
 	return artworks, nil
 }
+
+func InsertArtists(db *mongo.Database, artists []Artist) (*mongo.InsertManyResult, error) {
+	var docs []interface{}
+
+	for _, artist := range artists {
+		docs = append(docs, artist)
+	}
+
+	res, err := db.Collection("artists").InsertMany(context.TODO(), docs)
+	return res, err
+}
