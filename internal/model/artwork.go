@@ -18,7 +18,7 @@ type Artwork struct {
 	Artist      *Artist            `json:"artist,omitempty" bson:"artist,omitempty"`
 }
 
-func GetArtwork(db *mongo.Database, id primitive.ObjectID) (*Artwork, error) {
+func FindArtwork(db *mongo.Database, id primitive.ObjectID) (*Artwork, error) {
 	var artwork Artwork
 
 	match := bson.D{{Key: "$match", Value: bson.M{"_id": id}}}
@@ -45,7 +45,7 @@ func GetArtwork(db *mongo.Database, id primitive.ObjectID) (*Artwork, error) {
 	return &artwork, nil
 }
 
-func GetArtworks(db *mongo.Database, options ...bson.D) ([]Artwork, error) {
+func FindArtworks(db *mongo.Database, options ...bson.D) ([]Artwork, error) {
 	var artworks = []Artwork{}
 
 	unset := bson.D{{Key: "$unset", Value: "description"}}

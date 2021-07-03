@@ -23,7 +23,7 @@ func GetArtwork(db *mongo.Database) http.Handler {
 			return
 		}
 
-		artwork, err := model.GetArtwork(db, id)
+		artwork, err := model.FindArtwork(db, id)
 		if err != nil {
 			if err == mongo.ErrNoDocuments {
 				w.WriteHeader(http.StatusBadRequest)
@@ -43,7 +43,7 @@ func GetArtworks(db *mongo.Database) http.Handler {
 		w.Header().Set("Content-Type", "application/json")
 
 		options := util.QueryBuilderPipeline(r.URL.Query())
-		artworks, err := model.GetArtworks(db, options...)
+		artworks, err := model.FindArtworks(db, options...)
 		if err != nil {
 			w.WriteHeader(http.StatusInternalServerError)
 			w.Write([]byte(`{ "message": "` + err.Error() + `"}`))
