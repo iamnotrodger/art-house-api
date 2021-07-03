@@ -7,6 +7,7 @@ import (
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
+	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
 type Artist struct {
@@ -15,10 +16,10 @@ type Artist struct {
 	Image *Image             `json:"image,omitempty" bson:"image,omitempty"`
 }
 
-func GetArtists(db *mongo.Database) ([]Artist, error) {
+func FindArtists(db *mongo.Database, filter bson.D, options ...*options.FindOptions) ([]Artist, error) {
 	var artists = []Artist{}
 
-	cursor, err := db.Collection("artists").Find(context.TODO(), bson.M{})
+	cursor, err := db.Collection("artists").Find(context.TODO(), filter, options...)
 	if err != nil {
 		return nil, err
 	}
@@ -37,13 +38,16 @@ func GetArtists(db *mongo.Database) ([]Artist, error) {
 	return artists, nil
 }
 
-func GetArtistArtworks(db *mongo.Database, id primitive.ObjectID) ([]Artwork, error) {
+func FindArtistArtworks(db *mongo.Database, id primitive.ObjectID, options ...bson.D) ([]Artwork, error) {
 	var artworks = []Artwork{}
 
 	match := bson.D{{Key: "$match", Value: bson.M{"artist": id}}}
 	unset := bson.D{{Key: "$unset", Value: "description"}}
 
-	pipeline := mongo.Pipeline{match, unset, util.ArtworkLookup, util.ArtworkUnwind}
+	pipeline := mongo.Pipeline{match}
+	pipeline = append(pipeline, options...)
+	pipeline = append(pipeline, unset, util.ArtworkLookup, util.ArtworkUnwind)
+
 	cursor, err := db.Collection("artworks").Aggregate(context.TODO(), pipeline)
 	if err != nil {
 		return nil, err
