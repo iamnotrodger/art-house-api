@@ -18,6 +18,26 @@ type Artwork struct {
 	Artist      *Artist            `json:"artist,omitempty" bson:"artist,omitempty"`
 }
 
+type ArtworkDoc struct {
+	ID          primitive.ObjectID `json:"_id,omitempty" bson:"_id,omitempty"`
+	Title       string             `json:"title,omitempty" bson:"title,omitempty"`
+	Image       *Image             `json:"image,omitempty" bson:"image,omitempty"`
+	Year        int                `json:"year,omitempty" bson:"year, omitempty"`
+	Description string             `json:"description,omitempty" bson:"description,omitempty"`
+	Artist      primitive.ObjectID `json:"artist,omitempty" bson:"artist,omitempty"`
+}
+
+func (a *Artwork) ToDoc() *ArtworkDoc {
+	return &ArtworkDoc{
+		a.ID,
+		a.Title,
+		a.Image,
+		a.Year,
+		a.Description,
+		a.Artist.ID,
+	}
+}
+
 func FindArtwork(db *mongo.Database, id primitive.ObjectID) (*Artwork, error) {
 	var artwork Artwork
 
@@ -80,4 +100,15 @@ func FindArtworks(db *mongo.Database, options ...bson.D) ([]Artwork, error) {
 	}
 
 	return artworks, nil
+}
+
+func InsertArtworks(db *mongo.Database, artworks []ArtworkDoc) (*mongo.InsertManyResult, error) {
+	var docs []interface{}
+
+	for _, artwork := range artworks {
+		docs = append(docs, artwork)
+	}
+
+	res, err := db.Collection("artworks").InsertMany(context.TODO(), docs)
+	return res, err
 }
