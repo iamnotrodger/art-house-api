@@ -36,6 +36,8 @@ func main() {
 	router.Use(handler.LoggingMiddleware)
 
 	router.HandleFunc("/api/health", handler.Health).Methods("GET")
+	router.Handle("/api/artwork", handler.GetArtworks(db)).Methods("GET")
+	router.Handle("/api/artwork/{id}", handler.GetArtwork(db)).Methods("GET")
 	router.Handle("/api/artist", handler.GetArtists(db)).Methods("GET")
 	router.Handle("/api/artist/{id}/artwork", handler.GetArtistArtworks(db)).Methods("GET")
 
