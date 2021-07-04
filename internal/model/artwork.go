@@ -18,24 +18,22 @@ type Artwork struct {
 	Artist      *Artist            `json:"artist,omitempty" bson:"artist,omitempty"`
 }
 
-type ArtworkDoc struct {
-	ID          primitive.ObjectID `json:"_id,omitempty" bson:"_id,omitempty"`
-	Title       string             `json:"title,omitempty" bson:"title,omitempty"`
-	Image       *Image             `json:"image,omitempty" bson:"image,omitempty"`
-	Year        int                `json:"year,omitempty" bson:"year, omitempty"`
-	Description string             `json:"description,omitempty" bson:"description,omitempty"`
-	Artist      primitive.ObjectID `json:"artist,omitempty" bson:"artist,omitempty"`
-}
+func (a *Artwork) ToDoc() bson.D {
+	var doc bson.D
 
-func (a *Artwork) ToDoc() *ArtworkDoc {
-	return &ArtworkDoc{
-		a.ID,
-		a.Title,
-		a.Image,
-		a.Year,
-		a.Description,
-		a.Artist.ID,
+	if !a.ID.IsZero() {
+		doc = append(doc, bson.E{Key: "_id", Value: a.ID})
 	}
+
+	doc = append(doc,
+		bson.E{Key: "title", Value: a.Title},
+		bson.E{Key: "image", Value: a.Image},
+		bson.E{Key: "year", Value: a.Year},
+		bson.E{Key: "description", Value: a.Description},
+		bson.E{Key: "artist", Value: a.Artist.ID},
+	)
+
+	return doc
 }
 
 func FindArtwork(db *mongo.Database, id primitive.ObjectID) (*Artwork, error) {
@@ -102,11 +100,11 @@ func FindArtworks(db *mongo.Database, options ...bson.D) ([]Artwork, error) {
 	return artworks, nil
 }
 
-func InsertArtworks(db *mongo.Database, artworks []ArtworkDoc) (*mongo.InsertManyResult, error) {
+func InsertArtworks(db *mongo.Database, artworks []Artwork) (*mongo.InsertManyResult, error) {
 	var docs []interface{}
 
 	for _, artwork := range artworks {
-		docs = append(docs, artwork)
+		docs = append(docs, artwork.ToDoc())
 	}
 
 	res, err := db.Collection("artworks").InsertMany(context.TODO(), docs)
