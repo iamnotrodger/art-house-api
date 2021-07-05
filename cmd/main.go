@@ -31,6 +31,8 @@ func main() {
 	}
 	db := client.Database(dbName)
 
+	//TODO: migrate data
+
 	port := util.GetPort()
 	router := mux.NewRouter().StrictSlash(true)
 	router.Use(handler.LoggingMiddleware)
@@ -40,6 +42,9 @@ func main() {
 	router.Handle("/api/artwork/{id}", handler.GetArtwork(db)).Methods("GET")
 	router.Handle("/api/artist", handler.GetArtists(db)).Methods("GET")
 	router.Handle("/api/artist/{id}/artwork", handler.GetArtistArtworks(db)).Methods("GET")
+	router.Handle("/api/exhibition", handler.GetExhibitions(db)).Methods("GET")
+	router.Handle("/api/exhibition/{id}/artwork", handler.GetExhibitionArtworks(db)).Methods("GET")
+	router.Handle("/api/exhibition/{id}/artist", handler.GetExhibitionArtists(db)).Methods("GET")
 
 	log.Println("API Started. Listening on", port)
 	log.Fatal(http.ListenAndServe(port, router))
