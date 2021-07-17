@@ -45,6 +45,29 @@ func (e *Exhibition) ToDoc() bson.D {
 	return doc
 }
 
+func FindExhibition(db *mongo.Database, id primitive.ObjectID) (*Exhibition, error) {
+	var exhibition Exhibition
+
+	cursor, err := db.Collection("exhibitions").Find(context.TODO(), bson.M{"_id": id})
+	if err != nil {
+		return nil, err
+	}
+	defer cursor.Close(context.TODO())
+
+	if cursor.RemainingBatchLength() < 1 {
+		return nil, mongo.ErrNoDocuments
+	}
+
+	cursor.Next(context.TODO())
+	cursor.Decode(&exhibition)
+
+	if err = cursor.Err(); err != nil {
+		return nil, err
+	}
+
+	return &exhibition, nil
+}
+
 func FindExhibitions(db *mongo.Database, filter bson.D, options ...*options.FindOptions) ([]Exhibition, error) {
 	var exhibitions []Exhibition
 
