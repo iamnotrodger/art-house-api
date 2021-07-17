@@ -16,6 +16,29 @@ type Artist struct {
 	Image *Image             `json:"image,omitempty" bson:"image,omitempty"`
 }
 
+func FindArtist(db *mongo.Database, id primitive.ObjectID) (*Artist, error) {
+	var artist Artist
+
+	cursor, err := db.Collection("artists").Find(context.TODO(), bson.M{"_id": id})
+	if err != nil {
+		return nil, err
+	}
+	defer cursor.Close(context.TODO())
+
+	if cursor.RemainingBatchLength() < 1 {
+		return nil, mongo.ErrNoDocuments
+	}
+
+	cursor.Next(context.TODO())
+	cursor.Decode(&artist)
+
+	if err = cursor.Err(); err != nil {
+		return nil, err
+	}
+
+	return &artist, nil
+}
+
 func FindArtists(db *mongo.Database, filter bson.D, options ...*options.FindOptions) ([]Artist, error) {
 	var artists = []Artist{}
 
