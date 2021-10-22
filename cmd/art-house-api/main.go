@@ -9,6 +9,7 @@ import (
 	"github.com/gorilla/mux"
 	"github.com/iamnotrodger/art-house-api/internal/artist"
 	"github.com/iamnotrodger/art-house-api/internal/artwork"
+	"github.com/iamnotrodger/art-house-api/internal/exhibition"
 	"github.com/iamnotrodger/art-house-api/internal/handler"
 	"github.com/iamnotrodger/art-house-api/internal/util"
 	"github.com/joho/godotenv"
@@ -35,6 +36,7 @@ func main() {
 
 	artworkHandler := artwork.NewHandler(db)
 	artistHandler := artist.NewHandler(db)
+	exhibitionHandler := exhibition.NewHandler(db)
 
 	port := util.GetPort()
 	router := mux.NewRouter().StrictSlash(true)
@@ -53,10 +55,10 @@ func main() {
 	router.HandleFunc("/api/artist/{id}/artwork", artistHandler.GetArtworks).Methods("GET")
 
 	//Exhibition Routes
-	router.Handle("/api/exhibition", handler.GetExhibitions(db)).Methods("GET")
-	router.Handle("/api/exhibition/{id}", handler.GetExhibition(db)).Methods("GET")
-	router.Handle("/api/exhibition/{id}/artwork", handler.GetExhibitionArtworks(db)).Methods("GET")
-	router.Handle("/api/exhibition/{id}/artist", handler.GetExhibitionArtists(db)).Methods("GET")
+	router.HandleFunc("/api/exhibition", exhibitionHandler.GetMany).Methods("GET")
+	router.HandleFunc("/api/exhibition/{id}", exhibitionHandler.Get).Methods("GET")
+	router.HandleFunc("/api/exhibition/{id}/artwork", exhibitionHandler.GetArtworks).Methods("GET")
+	router.HandleFunc("/api/exhibition/{id}/artist", exhibitionHandler.GetArtists).Methods("GET")
 
 	server := cors.Default().Handler(router)
 	log.Println("API Started. Listening on", port)
