@@ -7,6 +7,7 @@ import (
 	"log"
 	"time"
 
+	"github.com/iamnotrodger/art-house-api/internal/artwork"
 	"github.com/iamnotrodger/art-house-api/internal/model"
 	"github.com/iamnotrodger/art-house-api/internal/util"
 	"github.com/joho/godotenv"
@@ -28,6 +29,8 @@ func main() {
 	}
 	db := client.Database(dbName)
 
+	artworkStore := artwork.NewStore(db)
+
 	artists, err := parseArtists("./cmd/seed/data/artists.json")
 	if err != nil {
 		log.Fatal(err)
@@ -48,7 +51,7 @@ func main() {
 		log.Fatal(err)
 	}
 
-	_, err = model.InsertArtworks(db, artworks)
+	_, err = artworkStore.InsertMany(artworks)
 	if err != nil {
 		log.Fatal(err)
 	}

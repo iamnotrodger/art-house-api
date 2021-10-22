@@ -7,6 +7,7 @@ import (
 	"time"
 
 	"github.com/gorilla/mux"
+	"github.com/iamnotrodger/art-house-api/internal/artwork"
 	"github.com/iamnotrodger/art-house-api/internal/handler"
 	"github.com/iamnotrodger/art-house-api/internal/util"
 	"github.com/joho/godotenv"
@@ -31,13 +32,15 @@ func main() {
 
 	//TODO: migrate data
 
+	artworkHandler := artwork.NewHandler(db)
+
 	port := util.GetPort()
 	router := mux.NewRouter().StrictSlash(true)
 	router.Use(handler.LoggingMiddleware)
 
 	router.HandleFunc("/api/health", handler.Health).Methods("GET")
-	router.Handle("/api/artwork", handler.GetArtworks(db)).Methods("GET")
-	router.Handle("/api/artwork/{id}", handler.GetArtwork(db)).Methods("GET")
+	router.HandleFunc("/api/artwork", artworkHandler.GetMany).Methods("GET")
+	router.HandleFunc("/api/artwork/{id}", artworkHandler.Get).Methods("GET")
 	router.Handle("/api/artist", handler.GetArtists(db)).Methods("GET")
 	router.Handle("/api/artist/{id}", handler.GetArtist(db)).Methods("GET")
 	router.Handle("/api/artist/{id}/artwork", handler.GetArtistArtworks(db)).Methods("GET")
