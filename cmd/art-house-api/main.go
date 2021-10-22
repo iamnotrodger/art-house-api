@@ -10,7 +10,8 @@ import (
 	"github.com/iamnotrodger/art-house-api/internal/artist"
 	"github.com/iamnotrodger/art-house-api/internal/artwork"
 	"github.com/iamnotrodger/art-house-api/internal/exhibition"
-	"github.com/iamnotrodger/art-house-api/internal/handler"
+	"github.com/iamnotrodger/art-house-api/internal/health"
+	"github.com/iamnotrodger/art-house-api/internal/middleware"
 	"github.com/iamnotrodger/art-house-api/internal/util"
 	"github.com/joho/godotenv"
 	"github.com/rs/cors"
@@ -40,10 +41,10 @@ func main() {
 
 	port := util.GetPort()
 	router := mux.NewRouter().StrictSlash(true)
-	router.Use(handler.LoggingMiddleware)
+	router.Use(middleware.LoggingMiddleware)
 
 	//Health Routes
-	router.HandleFunc("/api/health", handler.Health).Methods("GET")
+	router.HandleFunc("/api/health", health.GetHealth).Methods("GET")
 
 	//Artwork Routes
 	router.HandleFunc("/api/artwork", artworkHandler.GetMany).Methods("GET")
