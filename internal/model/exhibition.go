@@ -13,12 +13,12 @@ import (
 type Exhibition struct {
 	ID       primitive.ObjectID `json:"_id,omitempty" bson:"_id,omitempty"`
 	Name     string             `json:"name,omitempty" bson:"name,omitempty"`
-	Image    string             `json:"image,omitempty" bson:"image,omitempty"`
+	Images   []Image            `json:"images,omitempty" bson:"images,omitempty"`
 	Artists  []Artist           `json:"artists,omitempty" bson:"artists,omitempty"`
 	Artworks []Artwork          `json:"artworks,omitempty" bson:"artworks,omitempty"`
 }
 
-func (e *Exhibition) ToDoc() bson.D {
+func (e *Exhibition) ConvertToBson() bson.D {
 	var doc bson.D
 	var artists []primitive.ObjectID
 	var artworks []primitive.ObjectID
@@ -37,7 +37,7 @@ func (e *Exhibition) ToDoc() bson.D {
 
 	doc = append(doc,
 		bson.E{Key: "name", Value: e.Name},
-		bson.E{Key: "image", Value: e.Image},
+		bson.E{Key: "image", Value: e.Images},
 		bson.E{Key: "artists", Value: artists},
 		bson.E{Key: "artworks", Value: artworks},
 	)
@@ -201,7 +201,7 @@ func InsertExhibitions(db *mongo.Database, exhibitions []Exhibition) (*mongo.Ins
 	var docs []interface{}
 
 	for _, exhibit := range exhibitions {
-		docs = append(docs, exhibit.ToDoc())
+		docs = append(docs, exhibit.ConvertToBson())
 	}
 
 	res, err := db.Collection("exhibitions").InsertMany(context.TODO(), docs)

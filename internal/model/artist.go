@@ -11,9 +11,9 @@ import (
 )
 
 type Artist struct {
-	ID    primitive.ObjectID `json:"_id,omitempty" bson:"_id,omitempty"`
-	Name  string             `json:"name,omitempty" bson:"name,omitempty"`
-	Image *Image             `json:"image,omitempty" bson:"image,omitempty"`
+	ID     primitive.ObjectID `json:"_id,omitempty" bson:"_id,omitempty"`
+	Name   string             `json:"name,omitempty" bson:"name,omitempty"`
+	Images []Image            `json:"images,omitempty" bson:"images,omitempty"`
 }
 
 func FindArtist(db *mongo.Database, id primitive.ObjectID) (*Artist, error) {
@@ -36,6 +36,7 @@ func FindArtist(db *mongo.Database, id primitive.ObjectID) (*Artist, error) {
 		return nil, err
 	}
 
+	SortImages(artist.Images)
 	return &artist, nil
 }
 
@@ -56,6 +57,10 @@ func FindArtists(db *mongo.Database, filter bson.D, options ...*options.FindOpti
 
 	if err = cursor.Err(); err != nil {
 		return nil, err
+	}
+
+	for _, artist := range artists {
+		SortImages(artist.Images)
 	}
 
 	return artists, nil
@@ -94,6 +99,7 @@ func InsertArtists(db *mongo.Database, artists []Artist) (*mongo.InsertManyResul
 	var docs []interface{}
 
 	for _, artist := range artists {
+		SortImages(artist.Images)
 		docs = append(docs, artist)
 	}
 

@@ -1,7 +1,24 @@
 package model
 
+import (
+	"sort"
+)
+
 type Image struct {
-	AspectRation string `json:"aspect_ratio,omitempty" bson:"aspect_ratio,omitempty"`
-	Small        string `json:"small,omitempty" bson:"small,omitempty"`
-	Large        string `json:"large,omitempty" bson:"large,omitempty"`
+	Height *float64 `json:"height" bson:"height,omitempty"`
+	Width  *float64 `json:"width" bson:"width,omitempty"`
+	Url    string   `json:"url" bson:"url,omitempty"`
+}
+
+// SortImages sort the images by the size in decending order
+func SortImages(images []Image) {
+	sort.Slice(images, func(i int, j int) bool {
+		if images[i].Width == nil {
+			return false
+		} else if images[j].Width == nil {
+			return true
+		}
+
+		return *images[i].Width > *images[j].Width
+	})
 }
