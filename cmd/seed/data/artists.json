@@ -1,0 +1,65 @@
+[
+	{
+		"_id": "60e0850266d6c13d7b599b69",
+		"name": "Leonardo da Vinci",
+		"images": [
+			{
+				"url": "https://imgix.ranker.com/user_node_img/72/1433023/original/leonardo-da-vinci-u17?auto=format\u0026fit=crop\u0026fm=pjpg\u0026w=650\u0026q=60\u0026dpr=1"
+			}
+		]
+	},
+	{
+		"_id": "60e0850266d6c13d7b599b6a",
+		"name": "Michelangelo",
+		"images": [
+			{
+				"url": "https://imgix.ranker.com/node_img/79/1577342/original/michelangelo-writers-photo-2?auto=format\u0026fit=crop\u0026fm=pjpg\u0026w=650\u0026q=60\u0026dpr=1"
+			}
+		]
+	},
+	{
+		"_id": "60e0850266d6c13d7b599b6b",
+		"name": "Raphael",
+		"images": [
+			{
+				"url": "https://imgix.ranker.com/node_img/94/1874376/original/raphael-writers-photo-1?auto=format\u0026fit=crop\u0026fm=pjpg\u0026w=650\u0026q=60\u0026dpr=1"
+			}
+		]
+	},
+	{
+		"_id": "60e0850266d6c13d7b599b6d",
+		"name": "Vincent van Gogh",
+		"images": [
+			{
+				"url": "http://t2.gstatic.com/licensed-images?q=tbn:ANd9GcRERhZzcwwq4bgNA3TcVxFHhj7jwsP1mbxJAy2h4g39wqgMNUzNTfuMINLoNvvL"
+			}
+		]
+	},
+	{
+		"_id": "60f38f775c6df8581e015eba",
+		"name": "Claude Monet",
+		"images": [
+			{
+				"url": "https://www.claude-monet.com/imagess/claude-monet-photo.jpg"
+			}
+		]
+	},
+	{
+		"_id": "60f396d05c6df8581e015ebf",
+		"name": "Salvador Dalí",
+		"images": [
+			{
+				"url": "https://www.thedrinksbusiness.com/content/uploads/2019/03/Dali.jpg"
+			}
+		]
+	},
+	{
+		"_id": "60f399e85c6df8581e015ec2",
+		"name": "Rembrandt",
+		"images": [
+			{
+				"url": "https://www.biography.com/.images/t_share/MTgwMDE4MzE3MDM2MTAzMDAw/gettyimagess-544228200.jpg"
+			}
+		]
+	}
+]
