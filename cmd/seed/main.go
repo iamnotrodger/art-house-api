@@ -50,17 +50,17 @@ func main() {
 		log.Fatal(err)
 	}
 
-	_, err = artistStore.InsertMany(artists)
+	_, err = artistStore.InsertMany(context.TODO(), artists)
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	_, err = artworkStore.InsertMany(artworks)
+	_, err = artworkStore.InsertMany(context.TODO(), artworks)
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	_, err = exhibitionStore.InsertMany(exhibitions)
+	_, err = exhibitionStore.InsertMany(context.TODO(), exhibitions)
 	if err != nil {
 		log.Fatal(err)
 	}

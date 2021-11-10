@@ -20,24 +20,24 @@ func NewStore(db *mongo.Database) *Store {
 	}
 }
 
-func (s *Store) Find(id primitive.ObjectID) (*model.Artwork, error) {
+func (s *Store) Find(ctx context.Context, id primitive.ObjectID) (*model.Artwork, error) {
 	var artwork model.Artwork
 
 	match := bson.D{{Key: "$match", Value: bson.M{"_id": id}}}
 	limit := bson.D{{Key: "$limit", Value: 1}}
 
 	pipeline := mongo.Pipeline{match, limit, util.ArtworkLookup, util.ArtworkUnwind}
-	cursor, err := s.collection.Aggregate(context.TODO(), pipeline)
+	cursor, err := s.collection.Aggregate(ctx, pipeline)
 	if err != nil {
 		return nil, err
 	}
-	defer cursor.Close(context.TODO())
+	defer cursor.Close(ctx)
 
 	if cursor.RemainingBatchLength() < 1 {
 		return nil, mongo.ErrNoDocuments
 	}
 
-	cursor.Next(context.TODO())
+	cursor.Next(ctx)
 	cursor.Decode(&artwork)
 
 	if err = cursor.Err(); err != nil {
@@ -48,7 +48,7 @@ func (s *Store) Find(id primitive.ObjectID) (*model.Artwork, error) {
 	return &artwork, nil
 }
 
-func (s *Store) FindMany(options ...bson.D) ([]model.Artwork, error) {
+func (s *Store) FindMany(ctx context.Context, options ...bson.D) ([]model.Artwork, error) {
 	var artworks = []model.Artwork{}
 
 	unset := bson.D{{Key: "$unset", Value: "description"}}
@@ -66,13 +66,13 @@ func (s *Store) FindMany(options ...bson.D) ([]model.Artwork, error) {
 		pipeline = append(pipeline, unset, util.ArtworkLookup, util.ArtworkUnwind)
 	}
 
-	cursor, err := s.collection.Aggregate(context.TODO(), pipeline)
+	cursor, err := s.collection.Aggregate(ctx, pipeline)
 	if err != nil {
 		return nil, err
 	}
-	defer cursor.Close(context.TODO())
+	defer cursor.Close(ctx)
 
-	for cursor.Next(context.TODO()) {
+	for cursor.Next(ctx) {
 		var artwork model.Artwork
 		cursor.Decode(&artwork)
 		artworks = append(artworks, artwork)
@@ -89,7 +89,7 @@ func (s *Store) FindMany(options ...bson.D) ([]model.Artwork, error) {
 	return artworks, nil
 }
 
-func (s *Store) InsertMany(artworks []model.Artwork) (*mongo.InsertManyResult, error) {
+func (s *Store) InsertMany(ctx context.Context, artworks []model.Artwork) (*mongo.InsertManyResult, error) {
 	var docs []interface{}
 
 	for _, artwork := range artworks {
@@ -97,6 +97,6 @@ func (s *Store) InsertMany(artworks []model.Artwork) (*mongo.InsertManyResult, e
 		docs = append(docs, artwork.ConvertToBson())
 	}
 
-	res, err := s.collection.InsertMany(context.TODO(), docs)
+	res, err := s.collection.InsertMany(ctx, docs)
 	return res, err
 }

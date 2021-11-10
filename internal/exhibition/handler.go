@@ -32,7 +32,7 @@ func (h *Handler) Get(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	exhibition, err := h.store.Find(id)
+	exhibition, err := h.store.Find(r.Context(), id)
 	if err != nil {
 		if err == mongo.ErrNoDocuments {
 			w.WriteHeader(http.StatusBadRequest)
@@ -50,7 +50,7 @@ func (h *Handler) GetMany(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 
 	options := util.QueryBuilder(r.URL.Query())
-	exhibitions, err := h.store.FindMany(bson.D{}, options)
+	exhibitions, err := h.store.FindMany(r.Context(), bson.D{}, options)
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
 		w.Write([]byte(`{ "message": "` + err.Error() + `"}`))
@@ -72,7 +72,7 @@ func (h *Handler) GetArtworks(w http.ResponseWriter, r *http.Request) {
 	}
 
 	options := util.QueryBuilderPipeline(r.URL.Query())
-	artworks, err := h.store.FindArtworks(id, options...)
+	artworks, err := h.store.FindArtworks(r.Context(), id, options...)
 	if err != nil {
 		if err == mongo.ErrNoDocuments {
 			w.WriteHeader(http.StatusBadRequest)
@@ -98,7 +98,7 @@ func (h *Handler) GetArtists(w http.ResponseWriter, r *http.Request) {
 	}
 
 	options := util.QueryBuilderPipeline(r.URL.Query())
-	artists, err := h.store.FindArtists(id, options...)
+	artists, err := h.store.FindArtists(r.Context(), id, options...)
 	if err != nil {
 		if err == mongo.ErrNoDocuments {
 			w.WriteHeader(http.StatusBadRequest)

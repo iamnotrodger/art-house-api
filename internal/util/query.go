@@ -10,23 +10,25 @@ import (
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
-var ArtworkLookup = bson.D{
-	{Key: "$lookup",
-		Value: bson.D{
-			{Key: "from", Value: "artists"},
-			{Key: "localField", Value: "artist"},
-			{Key: "foreignField", Value: "_id"},
-			{Key: "as", Value: "artist"},
-		},
-	}}
+var (
+	ArtworkLookup = bson.D{
+		{Key: "$lookup",
+			Value: bson.D{
+				{Key: "from", Value: "artists"},
+				{Key: "localField", Value: "artist"},
+				{Key: "foreignField", Value: "_id"},
+				{Key: "as", Value: "artist"},
+			},
+		}}
 
-var ArtworkUnwind = bson.D{
-	{Key: "$unwind",
-		Value: bson.D{
-			{Key: "path", Value: "$artist"},
-			{Key: "preserveNullAndEmptyArrays", Value: false},
-		},
-	}}
+	ArtworkUnwind = bson.D{
+		{Key: "$unwind",
+			Value: bson.D{
+				{Key: "path", Value: "$artist"},
+				{Key: "preserveNullAndEmptyArrays", Value: false},
+			},
+		}}
+)
 
 type pairInt struct {
 	Key   string
@@ -68,6 +70,8 @@ func QueryBuilder(parameters url.Values) *options.FindOptions {
 	return options
 }
 
+//TODO: update this function so that it doesn't affect the url.Values
+//delete doesn't seem like a good idea
 func QueryBuilderPipeline(parameters url.Values) []bson.D {
 	var options []bson.D
 
@@ -118,6 +122,17 @@ func QueryBuilderPipeline(parameters url.Values) []bson.D {
 	}
 
 	return options
+}
+
+// FindOptionIndex returns -1 if index is not found
+func FindOptionIndex(key string, options []bson.D) int {
+	for i := len(options) - 1; i >= 0; i-- {
+		optionMap := options[i].Map()
+		if _, ok := optionMap[key]; ok {
+			return i
+		}
+	}
+	return -1
 }
 
 func FindLimitQuery(options []bson.D) int {

@@ -23,20 +23,20 @@ func NewStore(db *mongo.Database) *Store {
 	}
 }
 
-func (s *Store) Find(id primitive.ObjectID) (*model.Artist, error) {
+func (s *Store) Find(ctx context.Context, id primitive.ObjectID) (*model.Artist, error) {
 	var artist model.Artist
 
-	cursor, err := s.collection.Find(context.TODO(), bson.M{"_id": id})
+	cursor, err := s.collection.Find(ctx, bson.M{"_id": id})
 	if err != nil {
 		return nil, err
 	}
-	defer cursor.Close(context.TODO())
+	defer cursor.Close(ctx)
 
 	if cursor.RemainingBatchLength() < 1 {
 		return nil, mongo.ErrNoDocuments
 	}
 
-	cursor.Next(context.TODO())
+	cursor.Next(ctx)
 	cursor.Decode(&artist)
 
 	if err = cursor.Err(); err != nil {
@@ -47,16 +47,16 @@ func (s *Store) Find(id primitive.ObjectID) (*model.Artist, error) {
 	return &artist, nil
 }
 
-func (s *Store) FindMany(filter bson.D, options ...*options.FindOptions) ([]model.Artist, error) {
+func (s *Store) FindMany(ctx context.Context, filter bson.D, options ...*options.FindOptions) ([]model.Artist, error) {
 	var artists = []model.Artist{}
 
-	cursor, err := s.collection.Find(context.TODO(), filter, options...)
+	cursor, err := s.collection.Find(ctx, filter, options...)
 	if err != nil {
 		return nil, err
 	}
-	defer cursor.Close(context.TODO())
+	defer cursor.Close(ctx)
 
-	for cursor.Next(context.TODO()) {
+	for cursor.Next(ctx) {
 		var artist model.Artist
 		cursor.Decode(&artist)
 		artists = append(artists, artist)
@@ -73,7 +73,7 @@ func (s *Store) FindMany(filter bson.D, options ...*options.FindOptions) ([]mode
 	return artists, nil
 }
 
-func (s *Store) FindArtworks(id primitive.ObjectID, options ...bson.D) ([]model.Artwork, error) {
+func (s *Store) FindArtworks(ctx context.Context, id primitive.ObjectID, options ...bson.D) ([]model.Artwork, error) {
 	var artworks = []model.Artwork{}
 
 	match := bson.D{{Key: "$match", Value: bson.M{"artist": id}}}
@@ -83,13 +83,13 @@ func (s *Store) FindArtworks(id primitive.ObjectID, options ...bson.D) ([]model.
 	pipeline = append(pipeline, options...)
 	pipeline = append(pipeline, unset, util.ArtworkLookup, util.ArtworkUnwind)
 
-	cursor, err := s.db.Collection("artworks").Aggregate(context.TODO(), pipeline)
+	cursor, err := s.db.Collection("artworks").Aggregate(ctx, pipeline)
 	if err != nil {
 		return nil, err
 	}
-	defer cursor.Close(context.TODO())
+	defer cursor.Close(ctx)
 
-	for cursor.Next(context.TODO()) {
+	for cursor.Next(ctx) {
 		var artwork model.Artwork
 		cursor.Decode(&artwork)
 		artworks = append(artworks, artwork)
@@ -102,7 +102,7 @@ func (s *Store) FindArtworks(id primitive.ObjectID, options ...bson.D) ([]model.
 	return artworks, nil
 }
 
-func (s *Store) InsertMany(artists []model.Artist) (*mongo.InsertManyResult, error) {
+func (s *Store) InsertMany(ctx context.Context, artists []model.Artist) (*mongo.InsertManyResult, error) {
 	var docs []interface{}
 
 	for _, artist := range artists {
@@ -110,6 +110,6 @@ func (s *Store) InsertMany(artists []model.Artist) (*mongo.InsertManyResult, err
 		docs = append(docs, artist)
 	}
 
-	res, err := s.collection.InsertMany(context.TODO(), docs)
+	res, err := s.collection.InsertMany(ctx, docs)
 	return res, err
 }

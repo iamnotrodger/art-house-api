@@ -21,20 +21,20 @@ func NewStore(db *mongo.Database) *Store {
 	}
 }
 
-func (s *Store) Find(id primitive.ObjectID) (*model.Exhibition, error) {
+func (s *Store) Find(ctx context.Context, id primitive.ObjectID) (*model.Exhibition, error) {
 	var exhibition model.Exhibition
 
-	cursor, err := s.collection.Find(context.TODO(), bson.M{"_id": id})
+	cursor, err := s.collection.Find(ctx, bson.M{"_id": id})
 	if err != nil {
 		return nil, err
 	}
-	defer cursor.Close(context.TODO())
+	defer cursor.Close(ctx)
 
 	if cursor.RemainingBatchLength() < 1 {
 		return nil, mongo.ErrNoDocuments
 	}
 
-	cursor.Next(context.TODO())
+	cursor.Next(ctx)
 	cursor.Decode(&exhibition)
 
 	if err = cursor.Err(); err != nil {
@@ -44,16 +44,16 @@ func (s *Store) Find(id primitive.ObjectID) (*model.Exhibition, error) {
 	return &exhibition, nil
 }
 
-func (s *Store) FindMany(filter bson.D, options ...*options.FindOptions) ([]model.Exhibition, error) {
+func (s *Store) FindMany(ctx context.Context, filter bson.D, options ...*options.FindOptions) ([]model.Exhibition, error) {
 	var exhibitions []model.Exhibition
 
-	cursor, err := s.collection.Find(context.TODO(), filter, options...)
+	cursor, err := s.collection.Find(ctx, filter, options...)
 	if err != nil {
 		return nil, err
 	}
-	defer cursor.Close(context.TODO())
+	defer cursor.Close(ctx)
 
-	for cursor.Next(context.TODO()) {
+	for cursor.Next(ctx) {
 		var exhibit model.Exhibition
 		cursor.Decode(&exhibit)
 		exhibitions = append(exhibitions, exhibit)
@@ -66,7 +66,7 @@ func (s *Store) FindMany(filter bson.D, options ...*options.FindOptions) ([]mode
 	return exhibitions, nil
 }
 
-func (s *Store) FindArtworks(id primitive.ObjectID, options ...bson.D) ([]model.Artwork, error) {
+func (s *Store) FindArtworks(ctx context.Context, id primitive.ObjectID, options ...bson.D) ([]model.Artwork, error) {
 	var exhibition model.Exhibition
 
 	match := bson.D{{Key: "$match", Value: bson.M{"_id": id}}}
@@ -101,17 +101,17 @@ func (s *Store) FindArtworks(id primitive.ObjectID, options ...bson.D) ([]model.
 
 	pipeline := mongo.Pipeline{match, unset, lookup}
 
-	cursor, err := s.collection.Aggregate(context.TODO(), pipeline)
+	cursor, err := s.collection.Aggregate(ctx, pipeline)
 	if err != nil {
 		return nil, err
 	}
-	defer cursor.Close(context.TODO())
+	defer cursor.Close(ctx)
 
 	if cursor.RemainingBatchLength() < 1 {
 		return nil, mongo.ErrNoDocuments
 	}
 
-	cursor.Next(context.TODO())
+	cursor.Next(ctx)
 	cursor.Decode(&exhibition)
 
 	if err = cursor.Err(); err != nil {
@@ -121,7 +121,7 @@ func (s *Store) FindArtworks(id primitive.ObjectID, options ...bson.D) ([]model.
 	return exhibition.Artworks, nil
 }
 
-func (s *Store) FindArtists(id primitive.ObjectID, options ...bson.D) ([]model.Artist, error) {
+func (s *Store) FindArtists(ctx context.Context, id primitive.ObjectID, options ...bson.D) ([]model.Artist, error) {
 	var exhibition model.Exhibition
 
 	match := bson.D{{Key: "$match", Value: bson.M{"_id": id}}}
@@ -153,17 +153,17 @@ func (s *Store) FindArtists(id primitive.ObjectID, options ...bson.D) ([]model.A
 
 	pipeline := mongo.Pipeline{match, lookup}
 
-	cursor, err := s.collection.Aggregate(context.TODO(), pipeline)
+	cursor, err := s.collection.Aggregate(ctx, pipeline)
 	if err != nil {
 		return nil, err
 	}
-	defer cursor.Close(context.TODO())
+	defer cursor.Close(ctx)
 
 	if cursor.RemainingBatchLength() < 1 {
 		return nil, mongo.ErrNoDocuments
 	}
 
-	cursor.Next(context.TODO())
+	cursor.Next(ctx)
 	cursor.Decode(&exhibition)
 
 	if err = cursor.Err(); err != nil {
@@ -173,13 +173,13 @@ func (s *Store) FindArtists(id primitive.ObjectID, options ...bson.D) ([]model.A
 	return exhibition.Artists, nil
 }
 
-func (s *Store) InsertMany(exhibitions []model.Exhibition) (*mongo.InsertManyResult, error) {
+func (s *Store) InsertMany(ctx context.Context, exhibitions []model.Exhibition) (*mongo.InsertManyResult, error) {
 	var docs []interface{}
 
 	for _, exhibit := range exhibitions {
 		docs = append(docs, exhibit.ConvertToBson())
 	}
 
-	res, err := s.collection.InsertMany(context.TODO(), docs)
+	res, err := s.collection.InsertMany(ctx, docs)
 	return res, err
 }
