@@ -6,7 +6,6 @@ import (
 
 	"github.com/gorilla/mux"
 	"github.com/iamnotrodger/art-house-api/internal/util"
-	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
 )
 
@@ -29,13 +28,9 @@ func (h *Handler) Get(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 
 	params := mux.Vars(r)
-	id, err := primitive.ObjectIDFromHex(params["id"])
-	if err != nil {
-		util.HandleError(w, util.InvalidIDError)
-		return
-	}
+	artworkID := params["id"]
 
-	artwork, err := h.store.Find(r.Context(), id)
+	artwork, err := h.store.Find(r.Context(), artworkID)
 	if err != nil {
 		util.HandleError(w, err)
 		return

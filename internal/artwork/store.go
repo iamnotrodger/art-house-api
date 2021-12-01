@@ -20,8 +20,13 @@ func NewStore(db *mongo.Database) *Store {
 	}
 }
 
-func (s *Store) Find(ctx context.Context, id primitive.ObjectID) (*model.Artwork, error) {
+func (s *Store) Find(ctx context.Context, artworkID string) (*model.Artwork, error) {
 	var artwork model.Artwork
+
+	id, err := primitive.ObjectIDFromHex(artworkID)
+	if err != nil {
+		return nil, util.InvalidIDError
+	}
 
 	match := bson.D{{Key: "$match", Value: bson.M{"_id": id}}}
 	limit := bson.D{{Key: "$limit", Value: 1}}
