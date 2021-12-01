@@ -37,21 +37,12 @@ func main() {
 
 	//Health Routes
 	router.HandleFunc("/api/health", health.GetHealth).Methods("GET")
-
 	//Artwork Routes
-	router.HandleFunc("/api/artwork", artworkHandler.GetMany).Methods("GET")
-	router.HandleFunc("/api/artwork/{id}", artworkHandler.Get).Methods("GET")
-
+	artworkHandler.RegisterRoutes(router)
 	//Artist Routes
-	router.HandleFunc("/api/artist", artistHandler.GetMany).Methods("GET")
-	router.HandleFunc("/api/artist/{id}", artistHandler.Get).Methods("GET")
-	router.HandleFunc("/api/artist/{id}/artwork", artistHandler.GetArtworks).Methods("GET")
-
+	artistHandler.RegisterRoutes(router)
 	//Exhibition Routes
-	router.HandleFunc("/api/exhibition", exhibitionHandler.GetMany).Methods("GET")
-	router.HandleFunc("/api/exhibition/{id}", exhibitionHandler.Get).Methods("GET")
-	router.HandleFunc("/api/exhibition/{id}/artwork", exhibitionHandler.GetArtworks).Methods("GET")
-	router.HandleFunc("/api/exhibition/{id}/artist", exhibitionHandler.GetArtists).Methods("GET")
+	exhibitionHandler.RegisterRoutes(router)
 
 	server := cors.Default().Handler(router)
 	log.Println("API Started. Listening on", config.Global.Port)

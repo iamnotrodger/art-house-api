@@ -20,6 +20,11 @@ func NewHandler(db *mongo.Database) *Handler {
 	}
 }
 
+func (h *Handler) RegisterRoutes(router *mux.Router) {
+	router.HandleFunc("/api/artwork", h.GetMany).Methods("GET")
+	router.HandleFunc("/api/artwork/{id}", h.Get).Methods("GET")
+}
+
 func (h *Handler) Get(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 
