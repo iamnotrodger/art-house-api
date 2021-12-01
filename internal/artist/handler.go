@@ -27,19 +27,13 @@ func (h *Handler) Get(w http.ResponseWriter, r *http.Request) {
 	params := mux.Vars(r)
 	id, err := primitive.ObjectIDFromHex(params["id"])
 	if err != nil {
-		w.WriteHeader(http.StatusUnprocessableEntity)
-		w.Write([]byte(`{ "message": "Invalid ID"}`))
+		util.RespondWithError(w, http.StatusUnprocessableEntity, "Invalid ID")
 		return
 	}
 
 	artist, err := h.store.Find(r.Context(), id)
 	if err != nil {
-		if err == mongo.ErrNoDocuments {
-			w.WriteHeader(http.StatusBadRequest)
-		} else {
-			w.WriteHeader(http.StatusInternalServerError)
-		}
-		w.Write([]byte(`{ "message": "` + err.Error() + `"}`))
+		util.HandleError(w, err)
 		return
 	}
 
@@ -52,8 +46,7 @@ func (h *Handler) GetMany(w http.ResponseWriter, r *http.Request) {
 	options := util.QueryBuilder(r.URL.Query())
 	artists, err := h.store.FindMany(r.Context(), bson.D{}, options)
 	if err != nil {
-		w.WriteHeader(http.StatusInternalServerError)
-		w.Write([]byte(`{ "message": "` + err.Error() + `"}`))
+		util.HandleError(w, err)
 		return
 	}
 
@@ -66,8 +59,7 @@ func (h *Handler) GetArtworks(w http.ResponseWriter, r *http.Request) {
 	params := mux.Vars(r)
 	id, err := primitive.ObjectIDFromHex(params["id"])
 	if err != nil {
-		w.WriteHeader(http.StatusUnprocessableEntity)
-		w.Write([]byte(`{ "message": "Invalid ID"}`))
+		util.RespondWithError(w, http.StatusUnprocessableEntity, "Invalid ID")
 		return
 	}
 
@@ -77,8 +69,7 @@ func (h *Handler) GetArtworks(w http.ResponseWriter, r *http.Request) {
 	options := util.QueryBuilderPipeline(queryParams)
 	artworks, err := h.store.FindArtworks(r.Context(), id, options...)
 	if err != nil {
-		w.WriteHeader(http.StatusInternalServerError)
-		w.Write([]byte(`{ "message": "` + err.Error() + `"}`))
+		util.HandleError(w, err)
 		return
 	}
 

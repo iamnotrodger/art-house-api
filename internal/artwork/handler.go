@@ -26,8 +26,7 @@ func (h *Handler) Get(w http.ResponseWriter, r *http.Request) {
 	params := mux.Vars(r)
 	id, err := primitive.ObjectIDFromHex(params["id"])
 	if err != nil {
-		w.WriteHeader(http.StatusUnprocessableEntity)
-		w.Write([]byte(`{ "message": "Invalid ID"}`))
+		util.RespondWithError(w, http.StatusUnprocessableEntity, "Invalid Artwork ID")
 		return
 	}
 
@@ -51,8 +50,7 @@ func (h *Handler) GetMany(w http.ResponseWriter, r *http.Request) {
 	options := util.QueryBuilderPipeline(r.URL.Query())
 	artworks, err := h.store.FindMany(r.Context(), options...)
 	if err != nil {
-		w.WriteHeader(http.StatusInternalServerError)
-		w.Write([]byte(`{ "message": "` + err.Error() + `"}`))
+		util.HandleError(w, err)
 		return
 	}
 
