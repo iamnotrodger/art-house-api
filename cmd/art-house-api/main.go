@@ -7,39 +7,31 @@ import (
 	"time"
 
 	"github.com/gorilla/mux"
+	"github.com/iamnotrodger/art-house-api/cmd/config"
 	"github.com/iamnotrodger/art-house-api/internal/artist"
 	"github.com/iamnotrodger/art-house-api/internal/artwork"
 	"github.com/iamnotrodger/art-house-api/internal/exhibition"
 	"github.com/iamnotrodger/art-house-api/internal/health"
 	"github.com/iamnotrodger/art-house-api/internal/middleware"
 	"github.com/iamnotrodger/art-house-api/internal/util"
-	"github.com/joho/godotenv"
 	"github.com/rs/cors"
 )
 
 func main() {
-	godotenv.Load()
-
 	ctx, _ := context.WithTimeout(context.Background(), 10*time.Second)
-	client, err := util.MongoConnect(ctx)
+	client, err := util.GetMongoClient(ctx, config.Global.MongoURI)
 	if err != nil {
 		log.Fatal(err)
 	}
 	defer client.Disconnect(ctx)
+	db := client.Database(config.Global.MongoDBName)
 
-	dbName, err := util.GetDatabaseName()
-	if err != nil {
-		log.Fatal(err)
-	}
-	db := client.Database(dbName)
-
-	//TODO: migrate data
+	// TODO: migrate data
 
 	artworkHandler := artwork.NewHandler(db)
 	artistHandler := artist.NewHandler(db)
 	exhibitionHandler := exhibition.NewHandler(db)
 
-	port := util.GetPort()
 	router := mux.NewRouter().StrictSlash(true)
 	router.Use(middleware.LoggingMiddleware)
 
@@ -62,6 +54,6 @@ func main() {
 	router.HandleFunc("/api/exhibition/{id}/artist", exhibitionHandler.GetArtists).Methods("GET")
 
 	server := cors.Default().Handler(router)
-	log.Println("API Started. Listening on", port)
-	log.Fatal(http.ListenAndServe(port, server))
+	log.Println("API Started. Listening on", config.Global.Port)
+	log.Fatal(http.ListenAndServe(config.Global.Port, server))
 }
