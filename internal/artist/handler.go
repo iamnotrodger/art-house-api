@@ -27,7 +27,7 @@ func (h *Handler) Get(w http.ResponseWriter, r *http.Request) {
 	params := mux.Vars(r)
 	id, err := primitive.ObjectIDFromHex(params["id"])
 	if err != nil {
-		util.RespondWithError(w, http.StatusUnprocessableEntity, "Invalid ID")
+		util.HandleError(w, util.InvalidIDError)
 		return
 	}
 
@@ -59,7 +59,7 @@ func (h *Handler) GetArtworks(w http.ResponseWriter, r *http.Request) {
 	params := mux.Vars(r)
 	id, err := primitive.ObjectIDFromHex(params["id"])
 	if err != nil {
-		util.RespondWithError(w, http.StatusUnprocessableEntity, "Invalid ID")
+		util.HandleError(w, util.InvalidIDError)
 		return
 	}
 

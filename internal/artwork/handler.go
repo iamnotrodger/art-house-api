@@ -26,18 +26,13 @@ func (h *Handler) Get(w http.ResponseWriter, r *http.Request) {
 	params := mux.Vars(r)
 	id, err := primitive.ObjectIDFromHex(params["id"])
 	if err != nil {
-		util.RespondWithError(w, http.StatusUnprocessableEntity, "Invalid Artwork ID")
+		util.HandleError(w, util.InvalidIDError)
 		return
 	}
 
 	artwork, err := h.store.Find(r.Context(), id)
 	if err != nil {
-		if err == mongo.ErrNoDocuments {
-			w.WriteHeader(http.StatusBadRequest)
-		} else {
-			w.WriteHeader(http.StatusInternalServerError)
-		}
-		w.Write([]byte(`{ "message": "` + err.Error() + `"}`))
+		util.HandleError(w, err)
 		return
 	}
 
