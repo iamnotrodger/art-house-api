@@ -21,8 +21,13 @@ func NewStore(db *mongo.Database) *Store {
 	}
 }
 
-func (s *Store) Find(ctx context.Context, id primitive.ObjectID) (*model.Exhibition, error) {
+func (s *Store) Find(ctx context.Context, exhibitionID string) (*model.Exhibition, error) {
 	var exhibition model.Exhibition
+
+	id, err := primitive.ObjectIDFromHex(exhibitionID)
+	if err != nil {
+		return nil, util.InvalidIDError
+	}
 
 	cursor, err := s.collection.Find(ctx, bson.M{"_id": id})
 	if err != nil {
@@ -66,8 +71,13 @@ func (s *Store) FindMany(ctx context.Context, filter bson.D, options ...*options
 	return exhibitions, nil
 }
 
-func (s *Store) FindArtworks(ctx context.Context, id primitive.ObjectID, options ...bson.D) ([]model.Artwork, error) {
+func (s *Store) FindArtworks(ctx context.Context, exhibitionID string, options ...bson.D) ([]model.Artwork, error) {
 	var exhibition model.Exhibition
+
+	id, err := primitive.ObjectIDFromHex(exhibitionID)
+	if err != nil {
+		return nil, util.InvalidIDError
+	}
 
 	match := bson.D{{Key: "$match", Value: bson.M{"_id": id}}}
 	unset := bson.D{{Key: "$unset", Value: "artists"}}
@@ -121,8 +131,13 @@ func (s *Store) FindArtworks(ctx context.Context, id primitive.ObjectID, options
 	return exhibition.Artworks, nil
 }
 
-func (s *Store) FindArtists(ctx context.Context, id primitive.ObjectID, options ...bson.D) ([]model.Artist, error) {
+func (s *Store) FindArtists(ctx context.Context, exhibitionID string, options ...bson.D) ([]model.Artist, error) {
 	var exhibition model.Exhibition
+
+	id, err := primitive.ObjectIDFromHex(exhibitionID)
+	if err != nil {
+		return nil, util.InvalidIDError
+	}
 
 	match := bson.D{{Key: "$match", Value: bson.M{"_id": id}}}
 	lookupOptions := bson.D{

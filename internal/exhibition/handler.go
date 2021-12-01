@@ -7,7 +7,6 @@ import (
 	"github.com/gorilla/mux"
 	"github.com/iamnotrodger/art-house-api/internal/util"
 	"go.mongodb.org/mongo-driver/bson"
-	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
 )
 
@@ -32,13 +31,9 @@ func (h *Handler) Get(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 
 	params := mux.Vars(r)
-	id, err := primitive.ObjectIDFromHex(params["id"])
-	if err != nil {
-		util.HandleError(w, util.InvalidIDError)
-		return
-	}
+	exhibitionID := params["id"]
 
-	exhibition, err := h.store.Find(r.Context(), id)
+	exhibition, err := h.store.Find(r.Context(), exhibitionID)
 	if err != nil {
 		util.HandleError(w, err)
 		return
@@ -64,14 +59,10 @@ func (h *Handler) GetArtworks(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 
 	params := mux.Vars(r)
-	id, err := primitive.ObjectIDFromHex(params["id"])
-	if err != nil {
-		util.HandleError(w, util.InvalidIDError)
-		return
-	}
+	exhibitionID := params["id"]
 
 	options := util.QueryBuilderPipeline(r.URL.Query())
-	artworks, err := h.store.FindArtworks(r.Context(), id, options...)
+	artworks, err := h.store.FindArtworks(r.Context(), exhibitionID, options...)
 	if err != nil {
 		util.HandleError(w, err)
 		return
@@ -84,14 +75,10 @@ func (h *Handler) GetArtists(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 
 	params := mux.Vars(r)
-	id, err := primitive.ObjectIDFromHex(params["id"])
-	if err != nil {
-		util.HandleError(w, util.InvalidIDError)
-		return
-	}
+	exhibitionID := params["id"]
 
 	options := util.QueryBuilderPipeline(r.URL.Query())
-	artists, err := h.store.FindArtists(r.Context(), id, options...)
+	artists, err := h.store.FindArtists(r.Context(), exhibitionID, options...)
 	if err != nil {
 		util.HandleError(w, err)
 		return
