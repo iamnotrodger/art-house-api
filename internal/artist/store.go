@@ -23,8 +23,13 @@ func NewStore(db *mongo.Database) *Store {
 	}
 }
 
-func (s *Store) Find(ctx context.Context, id primitive.ObjectID) (*model.Artist, error) {
+func (s *Store) Find(ctx context.Context, artistID string) (*model.Artist, error) {
 	var artist model.Artist
+
+	id, err := primitive.ObjectIDFromHex(artistID)
+	if err != nil {
+		return nil, util.InvalidIDError
+	}
 
 	cursor, err := s.collection.Find(ctx, bson.M{"_id": id})
 	if err != nil {
@@ -73,8 +78,13 @@ func (s *Store) FindMany(ctx context.Context, filter bson.D, options ...*options
 	return artists, nil
 }
 
-func (s *Store) FindArtworks(ctx context.Context, id primitive.ObjectID, options ...bson.D) ([]model.Artwork, error) {
+func (s *Store) FindArtworks(ctx context.Context, artistID string, options ...bson.D) ([]model.Artwork, error) {
 	var artworks = []model.Artwork{}
+
+	id, err := primitive.ObjectIDFromHex(artistID)
+	if err != nil {
+		return nil, util.InvalidIDError
+	}
 
 	match := bson.D{{Key: "$match", Value: bson.M{"artist": id}}}
 	unset := bson.D{{Key: "$unset", Value: "description"}}
