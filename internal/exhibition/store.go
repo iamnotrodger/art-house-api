@@ -50,7 +50,7 @@ func (s *Store) Find(ctx context.Context, exhibitionID string) (*model.Exhibitio
 }
 
 func (s *Store) FindMany(ctx context.Context, filter bson.D, options ...*options.FindOptions) ([]model.Exhibition, error) {
-	var exhibitions []model.Exhibition
+	var exhibitions = []model.Exhibition{}
 
 	cursor, err := s.collection.Find(ctx, filter, options...)
 	if err != nil {
