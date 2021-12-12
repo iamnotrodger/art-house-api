@@ -1,32 +1,32 @@
 package util
 
 import (
-	"errors"
 	"net/http"
 
+	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
-)
-
-var (
-	InvalidIDError = errors.New("Invalid ID")
 )
 
 func HandleError(w http.ResponseWriter, err error) {
 	var statusCode int
+	message := err.Error()
 
 	switch err {
 	case mongo.ErrNilDocument:
 		statusCode = http.StatusBadRequest
-	case InvalidIDError:
+	case mongo.ErrNoDocuments:
+		statusCode = http.StatusNotFound
+	case primitive.ErrInvalidHex:
 		statusCode = http.StatusUnprocessableEntity
+		message = "Invalid ID"
 	default:
 		statusCode = http.StatusInternalServerError
 	}
 
-	RespondWithError(w, statusCode, err.Error())
+	RespondWithError(w, statusCode, message)
 }
 
 func RespondWithError(w http.ResponseWriter, statusCode int, msg string) {
 	w.WriteHeader(statusCode)
-	w.Write([]byte(`{ "message": "` + msg + `"}`))
+	w.Write([]byte(msg))
 }

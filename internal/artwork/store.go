@@ -25,7 +25,7 @@ func (s *Store) Find(ctx context.Context, artworkID string) (*model.Artwork, err
 
 	id, err := primitive.ObjectIDFromHex(artworkID)
 	if err != nil {
-		return nil, util.InvalidIDError
+		return nil, primitive.ErrInvalidHex
 	}
 
 	match := bson.D{{Key: "$match", Value: bson.M{"_id": id}}}

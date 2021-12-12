@@ -28,7 +28,7 @@ func (s *Store) Find(ctx context.Context, artistID string) (*model.Artist, error
 
 	id, err := primitive.ObjectIDFromHex(artistID)
 	if err != nil {
-		return nil, util.InvalidIDError
+		return nil, primitive.ErrInvalidHex
 	}
 
 	cursor, err := s.collection.Find(ctx, bson.M{"_id": id})
@@ -83,7 +83,7 @@ func (s *Store) FindArtworks(ctx context.Context, artistID string, options ...bs
 
 	id, err := primitive.ObjectIDFromHex(artistID)
 	if err != nil {
-		return nil, util.InvalidIDError
+		return nil, primitive.ErrInvalidHex
 	}
 
 	match := bson.D{{Key: "$match", Value: bson.M{"artist": id}}}
