@@ -18,12 +18,16 @@ func (e *Exhibition) ConvertToBson() bson.D {
 	var artists []primitive.ObjectID
 	var artworks []primitive.ObjectID
 
-	for _, a := range e.Artists {
-		artists = append(artists, a.ID)
+	for _, artist := range e.Artists {
+		artistID, err := primitive.ObjectIDFromHex(artist.ID)
+		if err == nil {
+			artists = append(artists, artistID)
+
+		}
 	}
 
-	for _, a := range e.Artworks {
-		artworks = append(artworks, a.ID)
+	for _, artwork := range e.Artworks {
+		artworks = append(artworks, artwork.ID)
 	}
 
 	if !e.ID.IsZero() {
