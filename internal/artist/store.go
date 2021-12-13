@@ -2,6 +2,7 @@ package artist
 
 import (
 	"context"
+	"fmt"
 
 	"github.com/iamnotrodger/art-house-api/internal/model"
 	"github.com/iamnotrodger/art-house-api/internal/util"
@@ -24,50 +25,38 @@ func NewStore(db *mongo.Database) *Store {
 }
 
 func (s *Store) Find(ctx context.Context, artistID string) (*model.Artist, error) {
-	var artist model.Artist
-
 	id, err := primitive.ObjectIDFromHex(artistID)
 	if err != nil {
 		return nil, primitive.ErrInvalidHex
 	}
 
-	cursor, err := s.collection.Find(ctx, bson.M{"_id": id})
-	if err != nil {
+	singleRes := s.collection.FindOne(ctx, bson.M{"_id": id}, &options.FindOneOptions{})
+	if err = singleRes.Err(); err != nil {
 		return nil, err
 	}
-	defer cursor.Close(ctx)
 
-	if cursor.RemainingBatchLength() < 1 {
-		return nil, mongo.ErrNoDocuments
-	}
-
-	cursor.Next(ctx)
-	cursor.Decode(&artist)
-
-	if err = cursor.Err(); err != nil {
+	artist := &model.Artist{}
+	err = singleRes.Decode(artist)
+	if err != nil {
+		err = fmt.Errorf("error decoding artist: %w", err)
 		return nil, err
 	}
 
 	model.SortImages(artist.Images)
-	return &artist, nil
+	return artist, nil
 }
 
-func (s *Store) FindMany(ctx context.Context, filter bson.D, options ...*options.FindOptions) ([]model.Artist, error) {
-	var artists = []model.Artist{}
-
+func (s *Store) FindMany(ctx context.Context, filter bson.D, options ...*options.FindOptions) ([]*model.Artist, error) {
 	cursor, err := s.collection.Find(ctx, filter, options...)
 	if err != nil {
 		return nil, err
 	}
 	defer cursor.Close(ctx)
 
-	for cursor.Next(ctx) {
-		var artist model.Artist
-		cursor.Decode(&artist)
-		artists = append(artists, artist)
-	}
-
-	if err = cursor.Err(); err != nil {
+	artists := []*model.Artist{}
+	err = cursor.All(ctx, &artists)
+	if err != nil {
+		err = fmt.Errorf("failed to unmarshal artists: %w", err)
 		return nil, err
 	}
 
@@ -78,9 +67,7 @@ func (s *Store) FindMany(ctx context.Context, filter bson.D, options ...*options
 	return artists, nil
 }
 
-func (s *Store) FindArtworks(ctx context.Context, artistID string, options ...bson.D) ([]model.Artwork, error) {
-	var artworks = []model.Artwork{}
-
+func (s *Store) FindArtworks(ctx context.Context, artistID string, options ...bson.D) ([]*model.Artwork, error) {
 	id, err := primitive.ObjectIDFromHex(artistID)
 	if err != nil {
 		return nil, primitive.ErrInvalidHex
@@ -99,13 +86,10 @@ func (s *Store) FindArtworks(ctx context.Context, artistID string, options ...bs
 	}
 	defer cursor.Close(ctx)
 
-	for cursor.Next(ctx) {
-		var artwork model.Artwork
-		cursor.Decode(&artwork)
-		artworks = append(artworks, artwork)
-	}
-
-	if err = cursor.Err(); err != nil {
+	artworks := []*model.Artwork{}
+	err = cursor.All(ctx, &artworks)
+	if err != nil {
+		err = fmt.Errorf("failed to unmarshal artworks: %w", err)
 		return nil, err
 	}
 
