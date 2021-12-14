@@ -95,7 +95,7 @@ func (s *Store) FindArtworks(ctx context.Context, artistID string, opts ...*opti
 	return artworks, nil
 }
 
-func (s *Store) InsertMany(ctx context.Context, artists []model.Artist) (*mongo.InsertManyResult, error) {
+func (s *Store) InsertMany(ctx context.Context, artists []*model.Artist) error {
 	var docs []interface{}
 
 	for _, artist := range artists {
@@ -103,6 +103,6 @@ func (s *Store) InsertMany(ctx context.Context, artists []model.Artist) (*mongo.
 		docs = append(docs, artist)
 	}
 
-	res, err := s.collection.InsertMany(ctx, docs)
-	return res, err
+	_, err := s.collection.InsertMany(ctx, docs)
+	return err
 }

@@ -43,7 +43,7 @@ func main() {
 		log.Fatal(err)
 	}
 
-	_, err = artistStore.InsertMany(context.TODO(), artists)
+	err = artistStore.InsertMany(context.TODO(), artists)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -59,8 +59,8 @@ func main() {
 	}
 }
 
-func parseArtists(filePath string) ([]model.Artist, error) {
-	var artists []model.Artist
+func parseArtists(filePath string) ([]*model.Artist, error) {
+	var artists []*model.Artist
 
 	file, err := ioutil.ReadFile(filePath)
 	if err != nil {
