@@ -5,7 +5,6 @@ import (
 	"fmt"
 
 	"github.com/iamnotrodger/art-house-api/internal/model"
-	"github.com/iamnotrodger/art-house-api/internal/util"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
@@ -67,20 +66,16 @@ func (s *Store) FindMany(ctx context.Context, filter bson.D, options ...*options
 	return artists, nil
 }
 
-func (s *Store) FindArtworks(ctx context.Context, artistID string, options ...bson.D) ([]*model.Artwork, error) {
+func (s *Store) FindArtworks(ctx context.Context, artistID string, opts ...*options.FindOptions) ([]*model.Artwork, error) {
 	id, err := primitive.ObjectIDFromHex(artistID)
 	if err != nil {
 		return nil, primitive.ErrInvalidHex
 	}
 
-	match := bson.D{{Key: "$match", Value: bson.M{"artist": id}}}
-	unset := bson.D{{Key: "$unset", Value: "description"}}
+	unset := options.Find().SetProjection(bson.M{"artist": 0})
+	opts = append(opts, unset)
 
-	pipeline := mongo.Pipeline{match}
-	pipeline = append(pipeline, options...)
-	pipeline = append(pipeline, unset, util.ArtworkLookup, util.ArtworkUnwind)
-
-	cursor, err := s.db.Collection("artworks").Aggregate(ctx, pipeline)
+	cursor, err := s.db.Collection("artworks").Find(ctx, bson.M{"artist": id}, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -91,6 +86,10 @@ func (s *Store) FindArtworks(ctx context.Context, artistID string, options ...bs
 	if err != nil {
 		err = fmt.Errorf("failed to unmarshal artworks: %w", err)
 		return nil, err
+	}
+
+	for _, artwork := range artworks {
+		model.SortImages(artwork.Images)
 	}
 
 	return artworks, nil

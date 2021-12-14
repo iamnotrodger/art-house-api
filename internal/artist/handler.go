@@ -63,11 +63,20 @@ func (h *Handler) GetArtworks(w http.ResponseWriter, r *http.Request) {
 	queryParams := r.URL.Query()
 	delete(queryParams, "search")
 
-	options := util.QueryBuilderPipeline(queryParams)
-	artworks, err := h.store.FindArtworks(r.Context(), artistID, options...)
+	options := util.QueryBuilder(queryParams)
+	artworks, err := h.store.FindArtworks(r.Context(), artistID, options)
 	if err != nil {
 		util.HandleError(w, err)
 		return
+	}
+	artist, err := h.store.Find(r.Context(), artistID)
+	if err != nil {
+		util.HandleError(w, err)
+		return
+	}
+
+	for _, artwork := range artworks {
+		artwork.Artist = artist
 	}
 
 	json.NewEncoder(w).Encode(artworks)
