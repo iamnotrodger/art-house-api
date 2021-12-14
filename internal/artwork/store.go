@@ -88,7 +88,7 @@ func (s *Store) FindMany(ctx context.Context, options ...bson.D) ([]*model.Artwo
 	return artworks, nil
 }
 
-func (s *Store) InsertMany(ctx context.Context, artworks []model.Artwork) (*mongo.InsertManyResult, error) {
+func (s *Store) InsertMany(ctx context.Context, artworks []*model.Artwork) error {
 	var docs []interface{}
 
 	for _, artwork := range artworks {
@@ -96,6 +96,6 @@ func (s *Store) InsertMany(ctx context.Context, artworks []model.Artwork) (*mong
 		docs = append(docs, artwork.ConvertToBson())
 	}
 
-	res, err := s.collection.InsertMany(ctx, docs)
-	return res, err
+	_, err := s.collection.InsertMany(ctx, docs)
+	return err
 }
