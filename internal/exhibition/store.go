@@ -195,13 +195,13 @@ func (s *Store) FindArtists(ctx context.Context, exhibitionID string, options ..
 	return exhibition.Artists, nil
 }
 
-func (s *Store) InsertMany(ctx context.Context, exhibitions []*model.Exhibition) (*mongo.InsertManyResult, error) {
+func (s *Store) InsertMany(ctx context.Context, exhibitions []*model.Exhibition) error {
 	var docs []interface{}
 
 	for _, exhibit := range exhibitions {
 		docs = append(docs, exhibit.ConvertToBson())
 	}
 
-	res, err := s.collection.InsertMany(ctx, docs)
-	return res, err
+	_, err := s.collection.InsertMany(ctx, docs)
+	return err
 }

@@ -53,7 +53,7 @@ func main() {
 		log.Fatal(err)
 	}
 
-	_, err = exhibitionStore.InsertMany(context.TODO(), exhibitions)
+	err = exhibitionStore.InsertMany(context.TODO(), exhibitions)
 	if err != nil {
 		log.Fatal(err)
 	}
