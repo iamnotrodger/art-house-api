@@ -22,8 +22,6 @@ func NewStore(db *mongo.Database) *Store {
 }
 
 func (s *Store) Find(ctx context.Context, exhibitionID string) (*model.Exhibition, error) {
-	var exhibition model.Exhibition
-
 	id, err := primitive.ObjectIDFromHex(exhibitionID)
 	if err != nil {
 		return nil, primitive.ErrInvalidHex
@@ -39,41 +37,44 @@ func (s *Store) Find(ctx context.Context, exhibitionID string) (*model.Exhibitio
 		return nil, mongo.ErrNoDocuments
 	}
 
+	var exhibition model.Exhibition
 	cursor.Next(ctx)
 	cursor.Decode(&exhibition)
-
 	if err = cursor.Err(); err != nil {
 		return nil, err
 	}
 
+	model.SortImages(exhibition.Images)
+
 	return &exhibition, nil
 }
 
-func (s *Store) FindMany(ctx context.Context, filter bson.D, options ...*options.FindOptions) ([]model.Exhibition, error) {
-	var exhibitions = []model.Exhibition{}
-
+func (s *Store) FindMany(ctx context.Context, filter bson.D, options ...*options.FindOptions) ([]*model.Exhibition, error) {
 	cursor, err := s.collection.Find(ctx, filter, options...)
 	if err != nil {
 		return nil, err
 	}
 	defer cursor.Close(ctx)
 
+	exhibitions := []*model.Exhibition{}
 	for cursor.Next(ctx) {
 		var exhibit model.Exhibition
 		cursor.Decode(&exhibit)
-		exhibitions = append(exhibitions, exhibit)
+		exhibitions = append(exhibitions, &exhibit)
 	}
 
 	if err = cursor.Err(); err != nil {
 		return nil, err
 	}
 
+	for _, exhibit := range exhibitions {
+		model.SortImages(exhibit.Images)
+	}
+
 	return exhibitions, nil
 }
 
 func (s *Store) FindArtworks(ctx context.Context, exhibitionID string, options ...bson.D) ([]*model.Artwork, error) {
-	var exhibition model.Exhibition
-
 	id, err := primitive.ObjectIDFromHex(exhibitionID)
 	if err != nil {
 		return nil, primitive.ErrInvalidHex
@@ -121,19 +122,21 @@ func (s *Store) FindArtworks(ctx context.Context, exhibitionID string, options .
 		return nil, mongo.ErrNoDocuments
 	}
 
+	exhibition := model.Exhibition{}
 	cursor.Next(ctx)
 	cursor.Decode(&exhibition)
-
 	if err = cursor.Err(); err != nil {
 		return nil, err
+	}
+
+	for _, artwork := range exhibition.Artworks {
+		model.SortImages(artwork.Images)
 	}
 
 	return exhibition.Artworks, nil
 }
 
 func (s *Store) FindArtists(ctx context.Context, exhibitionID string, options ...bson.D) ([]*model.Artist, error) {
-	var exhibition model.Exhibition
-
 	id, err := primitive.ObjectIDFromHex(exhibitionID)
 	if err != nil {
 		return nil, primitive.ErrInvalidHex
@@ -178,11 +181,15 @@ func (s *Store) FindArtists(ctx context.Context, exhibitionID string, options ..
 		return nil, mongo.ErrNoDocuments
 	}
 
+	exhibition := model.Exhibition{}
 	cursor.Next(ctx)
 	cursor.Decode(&exhibition)
-
 	if err = cursor.Err(); err != nil {
 		return nil, err
+	}
+
+	for _, artist := range exhibition.Artists {
+		model.SortImages(artist.Images)
 	}
 
 	return exhibition.Artists, nil
