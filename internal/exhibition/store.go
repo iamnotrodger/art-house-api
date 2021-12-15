@@ -71,7 +71,7 @@ func (s *Store) FindMany(ctx context.Context, filter bson.D, options ...*options
 	return exhibitions, nil
 }
 
-func (s *Store) FindArtworks(ctx context.Context, exhibitionID string, options ...bson.D) ([]model.Artwork, error) {
+func (s *Store) FindArtworks(ctx context.Context, exhibitionID string, options ...bson.D) ([]*model.Artwork, error) {
 	var exhibition model.Exhibition
 
 	id, err := primitive.ObjectIDFromHex(exhibitionID)
@@ -131,7 +131,7 @@ func (s *Store) FindArtworks(ctx context.Context, exhibitionID string, options .
 	return exhibition.Artworks, nil
 }
 
-func (s *Store) FindArtists(ctx context.Context, exhibitionID string, options ...bson.D) ([]model.Artist, error) {
+func (s *Store) FindArtists(ctx context.Context, exhibitionID string, options ...bson.D) ([]*model.Artist, error) {
 	var exhibition model.Exhibition
 
 	id, err := primitive.ObjectIDFromHex(exhibitionID)
@@ -188,7 +188,7 @@ func (s *Store) FindArtists(ctx context.Context, exhibitionID string, options ..
 	return exhibition.Artists, nil
 }
 
-func (s *Store) InsertMany(ctx context.Context, exhibitions []model.Exhibition) (*mongo.InsertManyResult, error) {
+func (s *Store) InsertMany(ctx context.Context, exhibitions []*model.Exhibition) (*mongo.InsertManyResult, error) {
 	var docs []interface{}
 
 	for _, exhibit := range exhibitions {

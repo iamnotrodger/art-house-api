@@ -91,8 +91,8 @@ func parseArtworks(filePath string) ([]*model.Artwork, error) {
 	return artworks, nil
 }
 
-func parseExhibitions(filePath string) ([]model.Exhibition, error) {
-	var exhibitions []model.Exhibition
+func parseExhibitions(filePath string) ([]*model.Exhibition, error) {
+	var exhibitions []*model.Exhibition
 
 	file, err := ioutil.ReadFile(filePath)
 	if err != nil {
