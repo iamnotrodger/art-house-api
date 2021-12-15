@@ -51,6 +51,8 @@ func (s *Store) Find(ctx context.Context, artworkID string) (*model.Artwork, err
 	}
 
 	model.SortImages(artwork.Images)
+	model.SortImages(artwork.Artist.Images)
+
 	return &artwork, nil
 }
 
@@ -83,6 +85,7 @@ func (s *Store) FindMany(ctx context.Context, options ...bson.D) ([]*model.Artwo
 
 	for _, artwork := range artworks {
 		model.SortImages(artwork.Images)
+		model.SortImages(artwork.Artist.Images)
 	}
 
 	return artworks, nil
