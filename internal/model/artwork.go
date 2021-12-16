@@ -8,7 +8,7 @@ import (
 type Artwork struct {
 	ID          primitive.ObjectID `json:"_id,omitempty" bson:"_id,omitempty"`
 	Title       string             `json:"title,omitempty" bson:"title,omitempty"`
-	Images      []Image            `json:"images,omitempty" bson:"images,omitempty"`
+	Images      []*Image           `json:"images,omitempty" bson:"images,omitempty"`
 	Year        int                `json:"year,omitempty" bson:"year, omitempty"`
 	Description string             `json:"description,omitempty" bson:"description,omitempty"`
 	Artist      *Artist            `json:"artist,omitempty" bson:"artist,omitempty"`

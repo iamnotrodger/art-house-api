@@ -15,8 +15,8 @@ func TestSortImages(t *testing.T) {
 
 	tests := []struct {
 		name           string
-		images         []Image
-		expectedImages []Image
+		images         []*Image
+		expectedImages []*Image
 	}{
 		{
 			name:           "sorting nil images",
@@ -25,7 +25,7 @@ func TestSortImages(t *testing.T) {
 		},
 		{
 			name: "sorting images",
-			images: []Image{
+			images: []*Image{
 				{
 					Height: nil,
 					Width:  nil,
@@ -47,7 +47,7 @@ func TestSortImages(t *testing.T) {
 					Width:  &size1920,
 				},
 			},
-			expectedImages: []Image{
+			expectedImages: []*Image{
 				{
 					Height: &size1920,
 					Width:  &size1920,
@@ -72,7 +72,7 @@ func TestSortImages(t *testing.T) {
 		},
 		{
 			name: "already sorted images",
-			images: []Image{
+			images: []*Image{
 				{
 					Height: &size1920,
 					Width:  &size1920,
@@ -90,7 +90,7 @@ func TestSortImages(t *testing.T) {
 					Width:  nil,
 				},
 			},
-			expectedImages: []Image{
+			expectedImages: []*Image{
 				{
 					Height: &size1920,
 					Width:  &size1920,

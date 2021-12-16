@@ -11,7 +11,7 @@ type Image struct {
 }
 
 // SortImages sort the images by the size in decending order
-func SortImages(images []Image) {
+func SortImages(images []*Image) {
 	sort.Slice(images, func(i int, j int) bool {
 		if images[i].Width == nil {
 			return false
@@ -19,6 +19,6 @@ func SortImages(images []Image) {
 			return true
 		}
 
-		return *images[i].Width > *images[j].Width
+		return *images[i].Width < *images[j].Width
 	})
 }

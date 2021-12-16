@@ -43,24 +43,24 @@ func main() {
 		log.Fatal(err)
 	}
 
-	_, err = artistStore.InsertMany(context.TODO(), artists)
+	err = artistStore.InsertMany(context.TODO(), artists)
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	_, err = artworkStore.InsertMany(context.TODO(), artworks)
+	err = artworkStore.InsertMany(context.TODO(), artworks)
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	_, err = exhibitionStore.InsertMany(context.TODO(), exhibitions)
+	err = exhibitionStore.InsertMany(context.TODO(), exhibitions)
 	if err != nil {
 		log.Fatal(err)
 	}
 }
 
-func parseArtists(filePath string) ([]model.Artist, error) {
-	var artists []model.Artist
+func parseArtists(filePath string) ([]*model.Artist, error) {
+	var artists []*model.Artist
 
 	file, err := ioutil.ReadFile(filePath)
 	if err != nil {
@@ -75,8 +75,8 @@ func parseArtists(filePath string) ([]model.Artist, error) {
 	return artists, nil
 }
 
-func parseArtworks(filePath string) ([]model.Artwork, error) {
-	var artworks []model.Artwork
+func parseArtworks(filePath string) ([]*model.Artwork, error) {
+	var artworks []*model.Artwork
 
 	file, err := ioutil.ReadFile(filePath)
 	if err != nil {
@@ -91,8 +91,8 @@ func parseArtworks(filePath string) ([]model.Artwork, error) {
 	return artworks, nil
 }
 
-func parseExhibitions(filePath string) ([]model.Exhibition, error) {
-	var exhibitions []model.Exhibition
+func parseExhibitions(filePath string) ([]*model.Exhibition, error) {
+	var exhibitions []*model.Exhibition
 
 	file, err := ioutil.ReadFile(filePath)
 	if err != nil {
