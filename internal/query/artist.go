@@ -14,7 +14,7 @@ type ArtistQueryParams struct {
 	Sort  map[string]int
 }
 
-func NewGetArtistQuery(parameters map[string][]string) *ArtistQueryParams {
+func NewArtistQuery(parameters map[string][]string) *ArtistQueryParams {
 	query := &ArtistQueryParams{}
 
 	if limit, ok := parameters["limit"]; ok {

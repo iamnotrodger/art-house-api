@@ -44,7 +44,7 @@ func (h *Handler) Get(w http.ResponseWriter, r *http.Request) {
 func (h *Handler) GetMany(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 
-	queryParams := query.NewGetArtistQuery(r.URL.Query())
+	queryParams := query.NewArtistQuery(r.URL.Query())
 	artists, err := h.store.FindMany(r.Context(), queryParams)
 	if err != nil {
 		util.HandleError(w, err)
