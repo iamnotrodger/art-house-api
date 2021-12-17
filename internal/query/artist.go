@@ -9,24 +9,24 @@ import (
 )
 
 type ArtistQueryParams struct {
-	Limit int64
-	Skip  int64
-	Sort  map[string]int
+	limit int64
+	skip  int64
+	sort  map[string]int
 }
 
 func NewArtistQuery(parameters map[string][]string) *ArtistQueryParams {
 	query := &ArtistQueryParams{}
 
 	if limit, ok := parameters["limit"]; ok {
-		query.setLimit(limit[0])
+		query.setLimitFromString(limit[0])
 	} else {
-		query.Limit = config.Global.ArtistLimit
+		query.limit = config.Global.ArtistLimit
 	}
 	if skip, ok := parameters["skip"]; ok {
-		query.setSkip(skip[0])
+		query.setSkipFromString(skip[0])
 	}
 	if sort, ok := parameters["sort"]; ok {
-		query.setSort(sort)
+		query.SetSort(sort)
 	}
 
 	return query
@@ -39,13 +39,13 @@ func (q *ArtistQueryParams) GetFilter() bson.D {
 func (q *ArtistQueryParams) GetFindOptions() *options.FindOptions {
 	options := options.Find()
 	if q.isSortValid() {
-		sort := q.getSortBson()
+		sort := getSortAsBson(q.sort)
 		options.SetSort(sort)
 	}
 	if q.isSkipValid() {
-		options.SetSkip(q.Skip)
+		options.SetSkip(q.skip)
 	}
-	options.SetLimit(q.Limit)
+	options.SetLimit(q.limit)
 	return options
 }
 
@@ -53,45 +53,51 @@ func (q *ArtistQueryParams) GetPipeline() []bson.D {
 	return nil
 }
 
-func (q *ArtistQueryParams) setLimit(limitString string) {
-	limit, err := strconv.ParseInt(limitString, 0, 64)
-	if err != nil || limit < config.Global.ArtworkLimitMin || limit > config.Global.ArtworkLimitMax {
-		q.Limit = config.Global.ArtistLimit
+func (q *ArtistQueryParams) SetLimit(limit int64) {
+	if limit < config.Global.ArtistLimitMin {
+		q.limit = config.Global.ArtistLimit
+	} else if limit > config.Global.ArtistLimitMax {
+		q.limit = config.Global.ArtworkLimitMax
 	} else {
-		q.Limit = limit
+		q.limit = limit
+	}
+}
+func (q *ArtistQueryParams) SetSkip(skip int64) {
+	if skip > 0 {
+		q.skip = skip
 	}
 }
 
-func (q *ArtistQueryParams) setSkip(skipString string) {
-	skip, err := strconv.ParseInt(skipString, 0, 64)
-	if err == nil && skip > 0 {
-		q.Skip = skip
-	}
-}
-
-func (q *ArtistQueryParams) setSort(sortArray []string) {
-	q.Sort = map[string]int{}
+func (q *ArtistQueryParams) SetSort(sortArray []string) {
+	q.sort = map[string]int{}
 	for _, sortString := range sortArray {
 		key, value := parseSort(sortString)
 		if key != "" {
-			q.Sort[key] = value
+			q.sort[key] = value
 		}
 	}
+}
 
+func (q *ArtistQueryParams) setLimitFromString(limitString string) {
+	limit, err := strconv.ParseInt(limitString, 0, 64)
+	if err != nil {
+		q.limit = config.Global.ArtworkLimit
+	} else {
+		q.SetLimit(limit)
+	}
+}
+
+func (q *ArtistQueryParams) setSkipFromString(skipString string) {
+	skip, err := strconv.ParseInt(skipString, 0, 64)
+	if err == nil {
+		q.SetSkip(skip)
+	}
 }
 
 func (q *ArtistQueryParams) isSortValid() bool {
-	return len(q.Sort) > 0
+	return q.sort != nil && len(q.sort) > 0
 }
 
 func (q *ArtistQueryParams) isSkipValid() bool {
-	return q.Skip > 0
-}
-
-func (q *ArtistQueryParams) getSortBson() bson.D {
-	sort := bson.D{}
-	for key, value := range q.Sort {
-		sort = append(sort, bson.E{Key: key, Value: value})
-	}
-	return sort
+	return q.skip > 0
 }

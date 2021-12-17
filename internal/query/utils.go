@@ -1,6 +1,10 @@
 package query
 
-import "strings"
+import (
+	"strings"
+
+	"go.mongodb.org/mongo-driver/bson"
+)
 
 func parseSort(sortString string) (string, int) {
 	pair := strings.Split(sortString, ":")
@@ -21,4 +25,12 @@ func parseSort(sortString string) (string, int) {
 	}
 
 	return key, value
+}
+
+func getSortAsBson(sortMap map[string]int) bson.D {
+	sort := bson.D{}
+	for key, value := range sortMap {
+		sort = append(sort, bson.E{Key: key, Value: value})
+	}
+	return sort
 }
