@@ -177,7 +177,7 @@ func TestFindMany(t *testing.T) {
 			mt.AddMockResponses(tc.dbResponse...)
 
 			store := NewStore(mt.DB)
-			artist, err := store.FindMany(context.Background(), bson.D{})
+			artist, err := store.FindMany(context.Background())
 			require.Equal(mt, tc.expectedArtists, artist)
 			require.Equal(mt, tc.expectedError, err)
 		})

@@ -5,6 +5,7 @@ import (
 	"fmt"
 
 	"github.com/iamnotrodger/art-house-api/internal/model"
+	"github.com/iamnotrodger/art-house-api/internal/query"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
@@ -45,8 +46,16 @@ func (s *Store) Find(ctx context.Context, artistID string) (*model.Artist, error
 	return artist, nil
 }
 
-func (s *Store) FindMany(ctx context.Context, filter bson.D, options ...*options.FindOptions) ([]*model.Artist, error) {
-	cursor, err := s.collection.Find(ctx, filter, options...)
+func (s *Store) FindMany(ctx context.Context, queryParam ...query.QueryParams) ([]*model.Artist, error) {
+	var options *options.FindOptions
+	filter := bson.D{}
+
+	if len(queryParam) > 0 {
+		filter = queryParam[0].GetFilter()
+		options = queryParam[0].GetFindOptions()
+	}
+
+	cursor, err := s.collection.Find(ctx, filter, options)
 	if err != nil {
 		return nil, err
 	}
