@@ -47,15 +47,15 @@ func (s *Store) Find(ctx context.Context, artistID string) (*model.Artist, error
 }
 
 func (s *Store) FindMany(ctx context.Context, queryParam ...query.QueryParams) ([]*model.Artist, error) {
-	var options *options.FindOptions
+	var opts *options.FindOptions
 	filter := bson.D{}
 
 	if len(queryParam) > 0 {
 		filter = queryParam[0].GetFilter()
-		options = queryParam[0].GetFindOptions()
+		opts = queryParam[0].GetFindOptions()
 	}
 
-	cursor, err := s.collection.Find(ctx, filter, options)
+	cursor, err := s.collection.Find(ctx, filter, opts)
 	if err != nil {
 		return nil, err
 	}
@@ -75,16 +75,21 @@ func (s *Store) FindMany(ctx context.Context, queryParam ...query.QueryParams) (
 	return artists, nil
 }
 
-func (s *Store) FindArtworks(ctx context.Context, artistID string, opts ...*options.FindOptions) ([]*model.Artwork, error) {
+func (s *Store) FindArtworks(ctx context.Context, artistID string, queryParam ...query.QueryParams) ([]*model.Artwork, error) {
 	id, err := primitive.ObjectIDFromHex(artistID)
 	if err != nil {
 		return nil, primitive.ErrInvalidHex
 	}
 
-	unset := options.Find().SetProjection(bson.M{"artist": 0})
-	opts = append(opts, unset)
+	var opts *options.FindOptions
+	filter := bson.D{{Key: "artist", Value: id}}
+	if len(queryParam) > 0 {
+		filter = append(filter, queryParam[0].GetFilter()...)
+		opts = queryParam[0].GetFindOptions()
+	}
+	opts.SetProjection(bson.M{"artist": 0})
 
-	cursor, err := s.db.Collection("artworks").Find(ctx, bson.M{"artist": id}, opts...)
+	cursor, err := s.db.Collection("artworks").Find(ctx, filter, opts)
 	if err != nil {
 		return nil, err
 	}

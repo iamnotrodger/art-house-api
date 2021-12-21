@@ -60,11 +60,8 @@ func (h *Handler) GetArtworks(w http.ResponseWriter, r *http.Request) {
 	params := mux.Vars(r)
 	artistID := params["id"]
 
-	queryParams := r.URL.Query()
-	delete(queryParams, "search")
-
-	options := util.QueryBuilder(queryParams)
-	artworks, err := h.store.FindArtworks(r.Context(), artistID, options)
+	queryParams := query.NewArtworkQuery(r.URL.Query())
+	artworks, err := h.store.FindArtworks(r.Context(), artistID, queryParams)
 	if err != nil {
 		util.HandleError(w, err)
 		return
