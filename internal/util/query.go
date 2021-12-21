@@ -124,28 +124,6 @@ func QueryBuilderPipeline(parameters url.Values) []bson.D {
 	return options
 }
 
-// FindOptionIndex returns -1 if index is not found
-func FindOptionIndex(key string, options []bson.D) int {
-	for i := len(options) - 1; i >= 0; i-- {
-		optionMap := options[i].Map()
-		if _, ok := optionMap[key]; ok {
-			return i
-		}
-	}
-	return -1
-}
-
-func FindLimitQuery(options []bson.D) int {
-	for i := len(options) - 1; i >= 0; i-- {
-		optionMap := options[i].Map()
-		if _, ok := optionMap["$limit"]; ok {
-			return i
-		}
-	}
-
-	return -1
-}
-
 func parseSort(sort string) (*pairInt, error) {
 	sortPair := &pairInt{
 		Value: 1,

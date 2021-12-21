@@ -5,7 +5,7 @@ import (
 	"fmt"
 
 	"github.com/iamnotrodger/art-house-api/internal/model"
-	"github.com/iamnotrodger/art-house-api/internal/util"
+	"github.com/iamnotrodger/art-house-api/internal/query"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
@@ -32,7 +32,7 @@ func (s *Store) Find(ctx context.Context, artworkID string) (*model.Artwork, err
 	match := bson.D{{Key: "$match", Value: bson.M{"_id": id}}}
 	limit := bson.D{{Key: "$limit", Value: 1}}
 
-	pipeline := mongo.Pipeline{match, limit, util.ArtworkLookup, util.ArtworkUnwind}
+	pipeline := mongo.Pipeline{match, limit, query.ArtworkLookupStage, query.ArtworkUnwindStage}
 	cursor, err := s.collection.Aggregate(ctx, pipeline)
 	if err != nil {
 		return nil, err
@@ -56,19 +56,13 @@ func (s *Store) Find(ctx context.Context, artworkID string) (*model.Artwork, err
 	return &artwork, nil
 }
 
-func (s *Store) FindMany(ctx context.Context, options ...bson.D) ([]*model.Artwork, error) {
+func (s *Store) FindMany(ctx context.Context, queryParam ...query.QueryParams) ([]*model.Artwork, error) {
 	pipeline := mongo.Pipeline{}
 
-	if index := util.FindLimitQuery(options); index > -1 {
-		limit := options[index]
-		options = append(options[:index], options[index+1:]...)
-		pipeline = append(pipeline, options...)
-		pipeline = append(pipeline, util.ArtworkLookup, util.ArtworkUnwind)
-		pipeline = append(pipeline, limit)
-	} else {
-		pipeline = append(pipeline, options...)
-		pipeline = append(pipeline, util.ArtworkLookup, util.ArtworkUnwind)
+	if len(queryParam) > 0 {
+		pipeline = queryParam[0].GetPipeline()
 	}
+	pipeline = append(pipeline, query.ArtworkLookupStage, query.ArtworkUnwindStage)
 
 	cursor, err := s.collection.Aggregate(ctx, pipeline)
 	if err != nil {

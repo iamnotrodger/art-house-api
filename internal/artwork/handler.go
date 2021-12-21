@@ -5,6 +5,7 @@ import (
 	"net/http"
 
 	"github.com/gorilla/mux"
+	"github.com/iamnotrodger/art-house-api/internal/query"
 	"github.com/iamnotrodger/art-house-api/internal/util"
 	"go.mongodb.org/mongo-driver/mongo"
 )
@@ -42,8 +43,8 @@ func (h *Handler) Get(w http.ResponseWriter, r *http.Request) {
 func (h *Handler) GetMany(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 
-	options := util.QueryBuilderPipeline(r.URL.Query())
-	artworks, err := h.store.FindMany(r.Context(), options...)
+	queryParams := query.NewArtworkQuery(r.URL.Query())
+	artworks, err := h.store.FindMany(r.Context(), queryParams)
 	if err != nil {
 		util.HandleError(w, err)
 		return
