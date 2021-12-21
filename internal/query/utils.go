@@ -6,6 +6,26 @@ import (
 	"go.mongodb.org/mongo-driver/bson"
 )
 
+var (
+	ArtworkLookupStage = bson.D{
+		{Key: "$lookup",
+			Value: bson.D{
+				{Key: "from", Value: "artists"},
+				{Key: "localField", Value: "artist"},
+				{Key: "foreignField", Value: "_id"},
+				{Key: "as", Value: "artist"},
+			},
+		}}
+
+	ArtworkUnwindStage = bson.D{
+		{Key: "$unwind",
+			Value: bson.D{
+				{Key: "path", Value: "$artist"},
+				{Key: "preserveNullAndEmptyArrays", Value: false},
+			},
+		}}
+)
+
 func parseSort(sortString string) (string, int) {
 	pair := strings.Split(sortString, ":")
 	if len(pair) != 2 {
