@@ -26,7 +26,7 @@ func (a *Artwork) ConvertToBson() bson.D {
 		bson.E{Key: "images", Value: a.Images},
 		bson.E{Key: "year", Value: a.Year},
 		bson.E{Key: "description", Value: a.Description},
-		bson.E{Key: "artist", Value: a.Artist.ID},
+		bson.E{Key: "artist_id", Value: a.Artist.ID},
 	)
 
 	return doc

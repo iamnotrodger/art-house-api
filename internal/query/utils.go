@@ -11,7 +11,7 @@ var (
 		{Key: "$lookup",
 			Value: bson.D{
 				{Key: "from", Value: "artists"},
-				{Key: "localField", Value: "artist"},
+				{Key: "localField", Value: "artist_id"},
 				{Key: "foreignField", Value: "_id"},
 				{Key: "as", Value: "artist"},
 			},
