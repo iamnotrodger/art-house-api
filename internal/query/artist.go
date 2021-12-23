@@ -50,7 +50,20 @@ func (q *ArtistQueryParams) GetFindOptions() *options.FindOptions {
 }
 
 func (q *ArtistQueryParams) GetPipeline() []bson.D {
-	return nil
+	pipeline := []bson.D{}
+
+	if q.isSortValid() {
+		sort := bson.D{{Key: "$sort", Value: q.sort}}
+		pipeline = append(pipeline, sort)
+	}
+	if q.isSkipValid() {
+		skip := bson.D{{Key: "$skip", Value: q.skip}}
+		pipeline = append(pipeline, skip)
+	}
+	limit := bson.D{{Key: "$limit", Value: q.limit}}
+	pipeline = append(pipeline, limit)
+
+	return pipeline
 }
 
 func (q *ArtistQueryParams) SetLimit(limit int64) {
