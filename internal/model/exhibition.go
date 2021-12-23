@@ -33,8 +33,8 @@ func (e *Exhibition) ConvertToBson() bson.D {
 	doc = append(doc,
 		bson.E{Key: "name", Value: e.Name},
 		bson.E{Key: "images", Value: e.Images},
-		bson.E{Key: "artists", Value: artists},
-		bson.E{Key: "artworks", Value: artworks},
+		bson.E{Key: "artist_ids", Value: artists},
+		bson.E{Key: "artwork_ids", Value: artworks},
 	)
 
 	return doc
