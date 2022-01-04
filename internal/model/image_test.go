@@ -27,42 +27,42 @@ func TestSortImages(t *testing.T) {
 			name: "sorting images",
 			images: []*Image{
 				{
-					Height: nil,
-					Width:  nil,
-				},
-				{
-					Height: &size500,
-					Width:  &size500,
-				},
-				{
-					Height: &size500,
-					Width:  &size500,
+					Height: &size1920,
+					Width:  &size1920,
 				},
 				{
 					Height: &size1080,
 					Width:  &size1080,
 				},
 				{
-					Height: &size1920,
-					Width:  &size1920,
+					Height: &size500,
+					Width:  &size500,
+				},
+				{
+					Height: &size500,
+					Width:  &size500,
+				},
+				{
+					Height: nil,
+					Width:  nil,
 				},
 			},
 			expectedImages: []*Image{
 				{
-					Height: &size1920,
-					Width:  &size1920,
+					Height: &size500,
+					Width:  &size500,
+				},
+				{
+					Height: &size500,
+					Width:  &size500,
 				},
 				{
 					Height: &size1080,
 					Width:  &size1080,
 				},
 				{
-					Height: &size500,
-					Width:  &size500,
-				},
-				{
-					Height: &size500,
-					Width:  &size500,
+					Height: &size1920,
+					Width:  &size1920,
 				},
 				{
 					Height: nil,
@@ -74,16 +74,16 @@ func TestSortImages(t *testing.T) {
 			name: "already sorted images",
 			images: []*Image{
 				{
-					Height: &size1920,
-					Width:  &size1920,
+					Height: &size500,
+					Width:  &size500,
 				},
 				{
 					Height: &size1080,
 					Width:  &size1080,
 				},
 				{
-					Height: &size500,
-					Width:  &size500,
+					Height: &size1920,
+					Width:  &size1920,
 				},
 				{
 					Height: nil,
@@ -92,16 +92,16 @@ func TestSortImages(t *testing.T) {
 			},
 			expectedImages: []*Image{
 				{
-					Height: &size1920,
-					Width:  &size1920,
+					Height: &size500,
+					Width:  &size500,
 				},
 				{
 					Height: &size1080,
 					Width:  &size1080,
 				},
 				{
-					Height: &size500,
-					Width:  &size500,
+					Height: &size1920,
+					Width:  &size1920,
 				},
 				{
 					Height: nil,
