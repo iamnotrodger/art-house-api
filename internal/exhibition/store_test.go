@@ -181,7 +181,7 @@ func TestFindMany(t *testing.T) {
 			mt.AddMockResponses(tc.dbResponse...)
 
 			store := NewStore(mt.DB)
-			exhibitions, err := store.FindMany(context.Background(), bson.D{})
+			exhibitions, err := store.FindMany(context.Background())
 			require.Equal(mt, tc.expectedExhibitions, exhibitions)
 			require.Equal(mt, tc.expectedError, err)
 		})
@@ -230,6 +230,9 @@ func TestFindArtworks(t *testing.T) {
 								{Key: "images", Value: imagesBson},
 								{Key: "year", Value: 1},
 								{Key: "description", Value: "description"},
+								{Key: "artist", Value: bson.D{{
+									Key: "_id", Value: artistID,
+								}}},
 							},
 							bson.D{
 								{Key: "_id", Value: artworkID},
@@ -237,6 +240,9 @@ func TestFindArtworks(t *testing.T) {
 								{Key: "images", Value: imagesBson},
 								{Key: "year", Value: 1},
 								{Key: "description", Value: "description"},
+								{Key: "artist", Value: bson.D{{
+									Key: "_id", Value: artistID,
+								}}},
 							},
 						},
 						},
@@ -250,6 +256,7 @@ func TestFindArtworks(t *testing.T) {
 					Images:      images,
 					Year:        1,
 					Description: "description",
+					Artist:      &model.Artist{ID: artistObjectID},
 				},
 				{
 					ID:          artworkObjectID,
@@ -257,6 +264,7 @@ func TestFindArtworks(t *testing.T) {
 					Images:      images,
 					Year:        1,
 					Description: "description",
+					Artist:      &model.Artist{ID: artistObjectID},
 				},
 			},
 			expectedError: nil,

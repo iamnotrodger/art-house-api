@@ -5,8 +5,8 @@ import (
 	"net/http"
 
 	"github.com/gorilla/mux"
+	"github.com/iamnotrodger/art-house-api/internal/query"
 	"github.com/iamnotrodger/art-house-api/internal/util"
-	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
 )
 
@@ -45,8 +45,8 @@ func (h *Handler) Get(w http.ResponseWriter, r *http.Request) {
 func (h *Handler) GetMany(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 
-	options := util.QueryBuilder(r.URL.Query())
-	exhibitions, err := h.store.FindMany(r.Context(), bson.D{}, options)
+	queryParams := query.NewExhibitionQuery(r.URL.Query())
+	exhibitions, err := h.store.FindMany(r.Context(), queryParams)
 	if err != nil {
 		util.HandleError(w, err)
 		return
@@ -61,8 +61,8 @@ func (h *Handler) GetArtworks(w http.ResponseWriter, r *http.Request) {
 	params := mux.Vars(r)
 	exhibitionID := params["id"]
 
-	options := util.QueryBuilderPipeline(r.URL.Query())
-	artworks, err := h.store.FindArtworks(r.Context(), exhibitionID, options...)
+	queryParams := query.NewArtworkQuery(r.URL.Query())
+	artworks, err := h.store.FindArtworks(r.Context(), exhibitionID, queryParams)
 	if err != nil {
 		util.HandleError(w, err)
 		return
@@ -77,8 +77,8 @@ func (h *Handler) GetArtists(w http.ResponseWriter, r *http.Request) {
 	params := mux.Vars(r)
 	exhibitionID := params["id"]
 
-	options := util.QueryBuilderPipeline(r.URL.Query())
-	artists, err := h.store.FindArtists(r.Context(), exhibitionID, options...)
+	queryParams := query.NewArtistQuery(r.URL.Query())
+	artists, err := h.store.FindArtists(r.Context(), exhibitionID, queryParams)
 	if err != nil {
 		util.HandleError(w, err)
 		return

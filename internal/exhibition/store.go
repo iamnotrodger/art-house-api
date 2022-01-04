@@ -4,7 +4,7 @@ import (
 	"context"
 
 	"github.com/iamnotrodger/art-house-api/internal/model"
-	"github.com/iamnotrodger/art-house-api/internal/util"
+	"github.com/iamnotrodger/art-house-api/internal/query"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
@@ -49,8 +49,16 @@ func (s *Store) Find(ctx context.Context, exhibitionID string) (*model.Exhibitio
 	return &exhibition, nil
 }
 
-func (s *Store) FindMany(ctx context.Context, filter bson.D, options ...*options.FindOptions) ([]*model.Exhibition, error) {
-	cursor, err := s.collection.Find(ctx, filter, options...)
+func (s *Store) FindMany(ctx context.Context, queryParam ...query.QueryParams) ([]*model.Exhibition, error) {
+	var opts *options.FindOptions
+	filter := bson.D{}
+
+	if len(queryParam) > 0 {
+		filter = queryParam[0].GetFilter()
+		opts = queryParam[0].GetFindOptions()
+	}
+
+	cursor, err := s.collection.Find(ctx, filter, opts)
 	if err != nil {
 		return nil, err
 	}
@@ -74,44 +82,43 @@ func (s *Store) FindMany(ctx context.Context, filter bson.D, options ...*options
 	return exhibitions, nil
 }
 
-func (s *Store) FindArtworks(ctx context.Context, exhibitionID string, options ...bson.D) ([]*model.Artwork, error) {
+func (s *Store) FindArtworks(ctx context.Context, exhibitionID string, queryParam ...query.QueryParams) ([]*model.Artwork, error) {
 	id, err := primitive.ObjectIDFromHex(exhibitionID)
 	if err != nil {
 		return nil, primitive.ErrInvalidHex
 	}
 
 	match := bson.D{{Key: "$match", Value: bson.M{"_id": id}}}
-	unset := bson.D{{Key: "$unset", Value: "artists"}}
-	lookupOptions := bson.D{
-		{Key: "from", Value: "artworks"},
-		{Key: "let", Value: bson.D{{
-			Key: "artwork_ids", Value: "$artworks",
-		}}},
-		{Key: "as", Value: "artworks"},
-	}
-	lookupPipeline := bson.A{
-		bson.D{{Key: "$match", Value: bson.D{{
-			Key: "$expr", Value: bson.D{{
-				Key: "$in", Value: bson.A{"$_id", "$$artwork_ids"},
+	matchArtworks := bson.D{{
+		Key: "$match",
+		Value: bson.D{{
+			Key: "$expr",
+			Value: bson.D{{
+				Key:   "$in",
+				Value: bson.A{"$_id", "$$artwork_ids"},
 			}},
 		}},
-		}},
-		util.ArtworkLookup,
-		util.ArtworkUnwind,
+	}}
+
+	lookupPipeline := bson.A{matchArtworks}
+	if len(queryParam) > 0 {
+		for _, queryOpts := range queryParam[0].GetPipeline() {
+			lookupPipeline = append(lookupPipeline, queryOpts)
+		}
 	}
+	lookupPipeline = append(lookupPipeline, query.ArtworkLookupStage, query.ArtworkUnwindStage)
 
-	for _, option := range options {
-		lookupPipeline = append(lookupPipeline, option)
-	}
+	lookup := bson.D{{
+		Key: "$lookup",
+		Value: bson.D{
+			{Key: "from", Value: "artworks"},
+			{Key: "let", Value: bson.D{{Key: "artwork_ids", Value: "$artwork_ids"}}},
+			{Key: "pipeline", Value: lookupPipeline},
+			{Key: "as", Value: "artworks"},
+		},
+	}}
 
-	lookupOptions = append(lookupOptions, bson.E{Key: "pipeline", Value: lookupPipeline})
-	lookup := bson.D{
-		{Key: "$lookup",
-			Value: lookupOptions,
-		}}
-
-	pipeline := mongo.Pipeline{match, unset, lookup}
-
+	pipeline := mongo.Pipeline{match, lookup}
 	cursor, err := s.collection.Aggregate(ctx, pipeline)
 	if err != nil {
 		return nil, err
@@ -131,46 +138,48 @@ func (s *Store) FindArtworks(ctx context.Context, exhibitionID string, options .
 
 	for _, artwork := range exhibition.Artworks {
 		model.SortImages(artwork.Images)
+		model.SortImages(artwork.Artist.Images)
 	}
 
 	return exhibition.Artworks, nil
 }
 
-func (s *Store) FindArtists(ctx context.Context, exhibitionID string, options ...bson.D) ([]*model.Artist, error) {
+func (s *Store) FindArtists(ctx context.Context, exhibitionID string, queryParam ...query.QueryParams) ([]*model.Artist, error) {
 	id, err := primitive.ObjectIDFromHex(exhibitionID)
 	if err != nil {
 		return nil, primitive.ErrInvalidHex
 	}
 
 	match := bson.D{{Key: "$match", Value: bson.M{"_id": id}}}
-	lookupOptions := bson.D{
-		{Key: "from", Value: "artists"},
-		{Key: "let", Value: bson.D{{
-			Key: "artist_ids", Value: "$artists",
-		}}},
-		{Key: "as", Value: "artists"},
-	}
-	lookupPipeline := bson.A{
-		bson.D{{Key: "$match", Value: bson.D{{
-			Key: "$expr", Value: bson.D{{
-				Key: "$in", Value: bson.A{"$_id", "$$artist_ids"},
+	matchArtists := bson.D{{
+		Key: "$match",
+		Value: bson.D{{
+			Key: "$expr",
+			Value: bson.D{{
+				Key:   "$in",
+				Value: bson.A{"$_id", "$$artist_ids"},
 			}},
 		}},
-		}},
+	}}
+
+	lookupPipeline := bson.A{matchArtists}
+	if len(queryParam) > 0 {
+		for _, queryOpts := range queryParam[0].GetPipeline() {
+			lookupPipeline = append(lookupPipeline, queryOpts)
+		}
 	}
 
-	for _, option := range options {
-		lookupPipeline = append(lookupPipeline, option)
-	}
-
-	lookupOptions = append(lookupOptions, bson.E{Key: "pipeline", Value: lookupPipeline})
-	lookup := bson.D{
-		{Key: "$lookup",
-			Value: lookupOptions,
-		}}
+	lookup := bson.D{{
+		Key: "$lookup",
+		Value: bson.D{
+			{Key: "from", Value: "artists"},
+			{Key: "let", Value: bson.D{{Key: "artist_ids", Value: "$artist_ids"}}},
+			{Key: "pipeline", Value: lookupPipeline},
+			{Key: "as", Value: "artists"},
+		},
+	}}
 
 	pipeline := mongo.Pipeline{match, lookup}
-
 	cursor, err := s.collection.Aggregate(ctx, pipeline)
 	if err != nil {
 		return nil, err
