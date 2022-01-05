@@ -82,10 +82,12 @@ func (s *Store) FindArtworks(ctx context.Context, artistID string, queryParam ..
 	}
 
 	var opts *options.FindOptions
-	filter := bson.D{{Key: "artist", Value: id}}
+	filter := bson.D{{Key: "artist_id", Value: id}}
 	if len(queryParam) > 0 {
 		filter = append(filter, queryParam[0].GetFilter()...)
 		opts = queryParam[0].GetFindOptions()
+	} else {
+		opts = options.Find()
 	}
 	opts.SetProjection(bson.M{"artist": 0})
 
