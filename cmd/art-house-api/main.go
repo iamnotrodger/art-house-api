@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"fmt"
 	"log"
 	"net/http"
 	"time"
@@ -46,5 +47,5 @@ func main() {
 
 	server := cors.Default().Handler(router)
 	log.Println("API Started. Listening on", config.Global.Port)
-	log.Fatal(http.ListenAndServe(config.Global.Port, server))
+	log.Fatal(http.ListenAndServe(fmt.Sprint(":", config.Global.Port), server))
 }

@@ -8,7 +8,7 @@ import (
 )
 
 const (
-	defaultPort        = ":8080"
+	defaultPort        = 8080
 	defaultMongoURI    = "mongodb://localhost:27017"
 	defaultMongoDBName = "art-house"
 
@@ -26,7 +26,7 @@ const (
 )
 
 type Spec struct {
-	Port               string `mapstructure:"port"`
+	Port               int    `mapstructure:"port"`
 	MongoURI           string `mapstructure:"mongo_uri"`
 	MongoDBName        string `mapstructure:"mongo_db_name"`
 	ArtworkLimit       int64  `mapstructure:"artwork_limit"`
