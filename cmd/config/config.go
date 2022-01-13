@@ -3,6 +3,7 @@ package config
 import (
 	"fmt"
 
+	"github.com/mitchellh/mapstructure"
 	"github.com/spf13/viper"
 )
 
@@ -60,7 +61,19 @@ func init() {
 	v.ReadInConfig()
 	v.AutomaticEnv()
 
+	setDefaults(v, Global)
+
 	if err := v.Unmarshal(&Global); err != nil {
 		panic(fmt.Errorf("fatal error unmarshalling config %s", err))
+	}
+}
+
+func setDefaults(v *viper.Viper, i interface{}) {
+	values := map[string]interface{}{}
+	if err := mapstructure.Decode(i, &values); err != nil {
+		panic(err)
+	}
+	for key, defaultValue := range values {
+		v.SetDefault(key, defaultValue)
 	}
 }
