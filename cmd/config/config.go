@@ -55,7 +55,7 @@ var Global = Spec{
 	ExhibitionLimitMax: defaultExhibitionLimitMax,
 }
 
-func init() {
+func LoadConfig() {
 	v := viper.New()
 	v.SetConfigFile(".env")
 	v.ReadInConfig()

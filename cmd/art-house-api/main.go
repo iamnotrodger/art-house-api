@@ -19,6 +19,8 @@ import (
 )
 
 func main() {
+	config.LoadConfig()
+
 	ctx, _ := context.WithTimeout(context.Background(), 10*time.Second)
 	client, err := util.GetMongoClient(ctx, config.Global.MongoURI)
 	if err != nil {
