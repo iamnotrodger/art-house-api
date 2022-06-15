@@ -1,6 +1,6 @@
 [
 	{
-		"_id": "60e0c4aeffdd3e5211a78a32",
+		"_id": { "$oid": "60e0c4aeffdd3e5211a78a32" },
 		"title": "Mona Lisa",
 		"images": [
 			{
@@ -17,11 +17,11 @@
 		"year": 1503,
 		"description": "The Mona Lisa is a half-length portrait painting by Italian artist Leonardo da Vinci. Considered an archetypal masterpiece of the Italian Renaissance, it has been described as \"the best known, the most visited, the most written about, the most sung about, the most parodied work of art in the world\"",
 		"artist": {
-			"_id": "60e0850266d6c13d7b599b69"
+			"_id": { "$oid": "60e0850266d6c13d7b599b69" }
 		}
 	},
 	{
-		"_id": "60e0c4aeffdd3e5211a78a33",
+		"_id": { "$oid": "60e0c4aeffdd3e5211a78a33" },
 		"title": "The Last Supper",
 		"images": [
 			{
@@ -38,11 +38,11 @@
 		"year": 1498,
 		"description": "The Last Supper is a late 15th-century mural painting by Italian artist Leonardo da Vinci housed by the refectory of the Convent of Santa Maria delle Grazie in Milan, Italy. It is one of the Western world's most recognizable paintings.",
 		"artist": {
-			"_id": "60e0850266d6c13d7b599b69"
+			"_id": { "$oid": "60e0850266d6c13d7b599b69" }
 		}
 	},
 	{
-		"_id": "60e0c4aeffdd3e5211a78a34",
+		"_id": { "$oid": "60e0c4aeffdd3e5211a78a34" },
 		"title": "The Creation of Adam",
 		"images": [
 			{
@@ -59,11 +59,11 @@
 		"year": 1512,
 		"description": "The Creation of Adam is a fresco painting by Italian artist Michelangelo, which forms part of the Sistine Chapel's ceiling, painted c. 1508–1512. It illustrates the Biblical creation narrative from the Book of Genesis in which God gives life to Adam, the first man.",
 		"artist": {
-			"_id": "60e0850266d6c13d7b599b6a"
+			"_id": { "$oid": "60e0850266d6c13d7b599b6a" }
 		}
 	},
 	{
-		"_id": "60e0c4aeffdd3e5211a78a35",
+		"_id": { "$oid": "60e0c4aeffdd3e5211a78a35" },
 		"title": "The School of Athens",
 		"images": [
 			{
@@ -80,11 +80,11 @@
 		"year": 1511,
 		"description": "The School of Athens is a fresco by the Italian Renaissance artist Raphael. It was painted between 1509 and 1511 as a part of Raphael's commission to decorate the rooms now known as the Stanze di Raffaello, in the Apostolic Palace in the Vatican.",
 		"artist": {
-			"_id": "60e0850266d6c13d7b599b6b"
+			"_id": { "$oid": "60e0850266d6c13d7b599b6b" }
 		}
 	},
 	{
-		"_id": "60e0c4aeffdd3e5211a78a36",
+		"_id": { "$oid": "60e0c4aeffdd3e5211a78a36" },
 		"title": "Transfiguration",
 		"images": [
 			{
@@ -101,11 +101,11 @@
 		"year": 1520,
 		"description": "The Transfiguration is the last painting by the Italian High Renaissance master Raphael. Commissioned by Cardinal Giulio de Medici, the later Pope Clement VII, and conceived as an altarpiece for the Narbonne Cathedral in France, Raphael worked on it until his death in 1520.",
 		"artist": {
-			"_id": "60e0850266d6c13d7b599b6b"
+			"_id": { "$oid": "60e0850266d6c13d7b599b6b" }
 		}
 	},
 	{
-		"_id": "60e0c4aeffdd3e5211a78a37",
+		"_id": { "$oid": "60e0c4aeffdd3e5211a78a37" },
 		"title": "The Starry Night",
 		"images": [
 			{
@@ -122,11 +122,11 @@
 		"year": 1889,
 		"description": "The Starry Night is an oil on canvas painting by Dutch Post-Impressionist painter Vincent van Gogh. Painted in June 1889, it depicts the view from the east-facing window of his asylum room at Saint-Rémy-de-Provence, just before sunrise, with the addition of an imaginary village.",
 		"artist": {
-			"_id": "60e0850266d6c13d7b599b6d"
+			"_id": { "$oid": "60e0850266d6c13d7b599b6d" }
 		}
 	},
 	{
-		"_id": "60e0c4aeffdd3e5211a78a38",
+		"_id": { "$oid": "60e0c4aeffdd3e5211a78a38" },
 		"title": "Café Terrace at Night",
 		"images": [
 			{
@@ -143,11 +143,11 @@
 		"year": 1888,
 		"description": "Café Terrace at Night is an 1888 oil painting by the Dutch artist Vincent van Gogh. It is also known as The Cafe Terrace on the Place du Forum, and, when first exhibited in 1891, was entitled Coffeehouse, in the evening. Van Gogh painted Café Terrace at Night in Arles, France, in mid-September 1888.",
 		"artist": {
-			"_id": "60e0850266d6c13d7b599b6d"
+			"_id": { "$oid": "60e0850266d6c13d7b599b6d" }
 		}
 	},
 	{
-		"_id": "60e0c4aeffdd3e5211a78a39",
+		"_id": { "$oid": "60e0c4aeffdd3e5211a78a39" },
 		"title": "Almond Blossoms",
 		"images": [
 			{
@@ -164,11 +164,11 @@
 		"year": 1890,
 		"description": "Almond Blossoms is a group of several paintings made in 1888 and 1890 by Vincent van Gogh in Arles and Saint-Rémy, southern France of blossoming almond trees. Flowering trees were special to van Gogh. They represented awakening and hope. He enjoyed them aesthetically and found joy in painting flowering trees.",
 		"artist": {
-			"_id": "60e0850266d6c13d7b599b6d"
+			"_id": { "$oid": "60e0850266d6c13d7b599b6d" }
 		}
 	},
 	{
-		"_id": "60f38b115c6df8581e015eb7",
+		"_id": { "$oid": "60f38b115c6df8581e015eb7" },
 		"title": "Van Gogh self-portrait",
 		"images": [
 			{
@@ -185,11 +185,11 @@
 		"year": 1889,
 		"description": "Dutch Post-Impressionist painter Vincent van Gogh painted a self-portrait in oil on canvas in September 1889. The work, which may have been Van Gogh's last self-portrait, was painted shortly before he left Saint-Rémy-de-Provence in southern France. The painting is now at the Musée d'Orsay in Paris.",
 		"artist": {
-			"_id": "60e0850266d6c13d7b599b6d"
+			"_id": { "$oid": "60e0850266d6c13d7b599b6d" }
 		}
 	},
 	{
-		"_id": "60f38e9c5c6df8581e015eb9",
+		"_id": { "$oid": "60f38e9c5c6df8581e015eb9" },
 		"title": "Wheatfield with Crows",
 		"images": [
 			{
@@ -206,11 +206,11 @@
 		"year": 1889,
 		"description": "Wheatfield with Crows is a July 1890 painting by Vincent van Gogh. It has been cited by several critics as one of his greatest works. It is commonly stated that this was van Gogh's final painting. However, art historians are uncertain as to which painting was van Gogh's last, as no clear historical records exist.",
 		"artist": {
-			"_id": "60e0850266d6c13d7b599b6d"
+			"_id": { "$oid": "60e0850266d6c13d7b599b6d" }
 		}
 	},
 	{
-		"_id": "60f3936c5c6df8581e015ebb",
+		"_id": { "$oid": "60f3936c5c6df8581e015ebb" },
 		"title": "Woman with a Parasol",
 		"images": [
 			{
@@ -227,11 +227,11 @@
 		"year": 1875,
 		"description": "Woman with a Parasol – Madame Monet and Her Son, sometimes known as The Stroll is an oil-on-canvas painting by Claude Monet from 1875.",
 		"artist": {
-			"_id": "60f38f775c6df8581e015eba"
+			"_id": { "$oid": "60f38f775c6df8581e015eba" }
 		}
 	},
 	{
-		"_id": "60f394c45c6df8581e015ebd",
+		"_id": { "$oid": "60f394c45c6df8581e015ebd" },
 		"title": "Garden at Sainte‑Adresse",
 		"images": [
 			{
@@ -248,11 +248,11 @@
 		"year": 1867,
 		"description": "The Garden at Sainte-Adresse is a painting by the French impressionist painter Claude Monet. The painting was acquired by the Metropolitan Museum of Art after an auction sale at Christie's in December 1967, under the French title La terrasse à Sainte-Adresse.",
 		"artist": {
-			"_id": "60f38f775c6df8581e015eba"
+			"_id": { "$oid": "60f38f775c6df8581e015eba" }
 		}
 	},
 	{
-		"_id": "60f3947b5c6df8581e015ebc",
+		"_id": { "$oid": "60f3947b5c6df8581e015ebc" },
 		"title": "San Giorgio Maggiore at Dusk",
 		"images": [
 			{
@@ -269,11 +269,11 @@
 		"year": 1867,
 		"description": "The Garden at Sainte-Adresse is a painting by the French impressionist painter Claude Monet. The painting was acquired by the Metropolitan Museum of Art after an auction sale at Christie's in December 1967, under the French title La terrasse à Sainte-Adresse.",
 		"artist": {
-			"_id": "60f38f775c6df8581e015eba"
+			"_id": { "$oid": "60f38f775c6df8581e015eba" }
 		}
 	},
 	{
-		"_id": "60f394f15c6df8581e015ebe",
+		"_id": { "$oid": "60f394f15c6df8581e015ebe" },
 		"title": "Impression, Sunrise",
 		"images": [
 			{
@@ -290,11 +290,11 @@
 		"year": 1872,
 		"description": "Impression, Sunrise is a painting by Claude Monet first shown at what would become known as the \"Exhibition of the Impressionists\" in Paris in April, 1874. The painting is credited with inspiring the name of the Impressionist movement. Impression, Sunrise depicts the port of Le Havre, Monet's hometown.",
 		"artist": {
-			"_id": "60f38f775c6df8581e015eba"
+			"_id": { "$oid": "60f38f775c6df8581e015eba" }
 		}
 	},
 	{
-		"_id": "60f398a25c6df8581e015ec0",
+		"_id": { "$oid": "60f398a25c6df8581e015ec0" },
 		"title": "The Persistence of Memory",
 		"images": [
 			{
@@ -306,11 +306,11 @@
 		"year": 1931,
 		"description": "The Persistence of Memory is a 1931 painting by artist Salvador Dalí and one of the most recognizable works of Surrealism. First shown at the Julien Levy Gallery in 1932, since 1934 the painting has been in the collection of the Museum of Modern Art in New York City, which received it from an anonymous donor.",
 		"artist": {
-			"_id": "60f396d05c6df8581e015ebf"
+			"_id": { "$oid": "60f396d05c6df8581e015ebf" }
 		}
 	},
 	{
-		"_id": "60f398c15c6df8581e015ec1",
+		"_id": { "$oid": "60f398c15c6df8581e015ec1" },
 		"title": "The Great Masturbator",
 		"images": [
 			{
@@ -322,11 +322,11 @@
 		"year": 1929,
 		"description": "The Great Masturbator is a painting by Salvador Dalí executed during the surrealist epoch, and is currently displayed at Museo Nacional Centro de Arte Reina Sofía, Madrid.",
 		"artist": {
-			"_id": "60f396d05c6df8581e015ebf"
+			"_id": { "$oid": "60f396d05c6df8581e015ebf" }
 		}
 	},
 	{
-		"_id": "60f39be85c6df8581e015ec4",
+		"_id": { "$oid": "60f39be85c6df8581e015ec4" },
 		"title": "The Return of the Prodigal Son",
 		"images": [
 			{
@@ -343,11 +343,11 @@
 		"year": 1669,
 		"description": "The Return of the Prodigal Son is an oil painting by Rembrandt, part of the collection of the Hermitage Museum in St. Petersburg. It is among the Dutch master's final works, likely completed within two years of his death in 1669.",
 		"artist": {
-			"_id": "60f399e85c6df8581e015ec2"
+			"_id": { "$oid": "60f399e85c6df8581e015ec2" }
 		}
 	},
 	{
-		"_id": "60f39c0e5c6df8581e015ec5",
+		"_id": { "$oid": "60f39c0e5c6df8581e015ec5" },
 		"title": "The Night Watch",
 		"images": [
 			{
@@ -364,11 +364,11 @@
 		"year": 1642,
 		"description": "Militia Company of District II under the Command of Captain Frans Banninck Cocq, also known as The Shooting Company of Frans Banning Cocq and Willem van Ruytenburch, but commonly referred to as The Night Watch, is a 1642 painting by Rembrandt van Rijn.",
 		"artist": {
-			"_id": "60f399e85c6df8581e015ec2"
+			"_id": { "$oid": "60f399e85c6df8581e015ec2" }
 		}
 	},
 	{
-		"_id": "60f39c2a5c6df8581e015ec6",
+		"_id": { "$oid": "60f39c2a5c6df8581e015ec6" },
 		"title": "The Storm on the Sea of Galilee",
 		"images": [
 			{
@@ -385,11 +385,11 @@
 		"year": 1633,
 		"description": "The Storm on the Sea of Galilee is a 1633 oil-on-canvas painting by the Dutch Golden Age painter Rembrandt van Rijn. It was previously in the Isabella Stewart Gardner Museum in Boston but was stolen in 1990 and remains missing.",
 		"artist": {
-			"_id": "60f399e85c6df8581e015ec2"
+			"_id": { "$oid": "60f399e85c6df8581e015ec2" }
 		}
 	},
 	{
-		"_id": "60f39c465c6df8581e015ec7",
+		"_id": { "$oid": "60f39c465c6df8581e015ec7" },
 		"title": "Danaë",
 		"images": [
 			{
@@ -406,11 +406,11 @@
 		"year": 1636,
 		"description": "Danaë is a painting by the Dutch artist Rembrandt, first painted in 1636, but later extensively reworked by Rembrandt, probably in the 1640s, and perhaps before 1643. Once part of Pierre Crozat's collection, it has been in the Hermitage Museum, in St. Petersburg, Russia since the 18th century.",
 		"artist": {
-			"_id": "60f399e85c6df8581e015ec2"
+			"_id": { "$oid": "60f399e85c6df8581e015ec2" }
 		}
 	},
 	{
-		"_id": "60f39c5d5c6df8581e015ec8",
+		"_id": { "$oid": "60f39c5d5c6df8581e015ec8" },
 		"title": "Bathsheba at Her Bath",
 		"images": [
 			{
@@ -427,7 +427,7 @@
 		"year": 1654,
 		"description": "Bathsheba at Her Bath is an oil painting by the Dutch artist Rembrandt finished in 1654. A depiction that is both sensual and empathetic, it shows a moment from the Old Testament story in which King David sees Bathsheba bathing and, entranced, seduces and impregnates her.",
 		"artist": {
-			"_id": "60f399e85c6df8581e015ec2"
+			"_id": { "$oid": "60f399e85c6df8581e015ec2" }
 		}
 	}
 ]

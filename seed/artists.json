@@ -1,6 +1,6 @@
 [
 	{
-		"_id": "60e0850266d6c13d7b599b69",
+		"_id": { "$oid": "60e0850266d6c13d7b599b69" },
 		"name": "Leonardo da Vinci",
 		"images": [
 			{
@@ -9,7 +9,7 @@
 		]
 	},
 	{
-		"_id": "60e0850266d6c13d7b599b6a",
+		"_id": { "$oid": "60e0850266d6c13d7b599b6a" },
 		"name": "Michelangelo",
 		"images": [
 			{
@@ -18,7 +18,7 @@
 		]
 	},
 	{
-		"_id": "60e0850266d6c13d7b599b6b",
+		"_id": { "$oid": "60e0850266d6c13d7b599b6b" },
 		"name": "Raphael",
 		"images": [
 			{
@@ -27,7 +27,7 @@
 		]
 	},
 	{
-		"_id": "60e0850266d6c13d7b599b6d",
+		"_id": { "$oid": "60e0850266d6c13d7b599b6d" },
 		"name": "Vincent van Gogh",
 		"images": [
 			{
@@ -36,7 +36,7 @@
 		]
 	},
 	{
-		"_id": "60f38f775c6df8581e015eba",
+		"_id": { "$oid": "60f38f775c6df8581e015eba" },
 		"name": "Claude Monet",
 		"images": [
 			{
@@ -45,7 +45,7 @@
 		]
 	},
 	{
-		"_id": "60f396d05c6df8581e015ebf",
+		"_id": { "$oid": "60f396d05c6df8581e015ebf" },
 		"name": "Salvador Dalí",
 		"images": [
 			{
@@ -54,7 +54,7 @@
 		]
 	},
 	{
-		"_id": "60f399e85c6df8581e015ec2",
+		"_id": { "$oid": "60f399e85c6df8581e015ec2" },
 		"name": "Rembrandt",
 		"images": [
 			{
