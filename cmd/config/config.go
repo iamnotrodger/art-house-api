@@ -8,27 +8,30 @@ import (
 )
 
 const (
-	defaultPort        = 8080
-	defaultMongoURI    = "mongodb://localhost:27017"
-	defaultMongoDBName = "art-house"
-
-	defaultArtworkLimit    = 15
-	defaultArtworkLimitMin = 1
-	defaultArtworkLimitMax = 100
-
-	defaultArtistLimit    = 15
-	defaultArtistLimitMin = 1
-	defaultArtistLimitMax = 100
-
-	defaultExhibitionLimit    = 15
-	defaultExhibitionLimitMin = 1
-	defaultExhibitionLimitMax = 100
+	defaultPort               = 8080
+	defaultMongoURI           = "mongodb://localhost:27017"
+	defaultMongoDBName        = "art-house"
+	defaultRedisAddr          = "localhost:6379"
+	defaultRedisPassword      = ""
+	defaultRedisDb            = 0
+	defaultArtworkLimit       = int64(15)
+	defaultArtworkLimitMin    = int64(1)
+	defaultArtworkLimitMax    = int64(100)
+	defaultArtistLimit        = int64(15)
+	defaultArtistLimitMin     = int64(1)
+	defaultArtistLimitMax     = int64(100)
+	defaultExhibitionLimit    = int64(15)
+	defaultExhibitionLimitMin = int64(1)
+	defaultExhibitionLimitMax = int64(100)
 )
 
 type Spec struct {
 	Port               int    `mapstructure:"port"`
 	MongoURI           string `mapstructure:"mongo_uri"`
 	MongoDBName        string `mapstructure:"mongo_db_name"`
+	RedisAddr          string `mapstructure:"redis_addr"`
+	RedisPassword      string `mapstructure:"redis_password"`
+	RedisDb            int    `mapstructure:"redis_db"`
 	ArtworkLimit       int64  `mapstructure:"artwork_limit"`
 	ArtworkLimitMin    int64  `mapstructure:"artwork_limit_min"`
 	ArtworkLimitMax    int64  `mapstructure:"artwork_limit_max"`
@@ -44,6 +47,9 @@ var Global = Spec{
 	Port:               defaultPort,
 	MongoURI:           defaultMongoURI,
 	MongoDBName:        defaultMongoDBName,
+	RedisAddr:          defaultRedisAddr,
+	RedisPassword:      defaultRedisPassword,
+	RedisDb:            defaultRedisDb,
 	ArtworkLimit:       defaultArtworkLimit,
 	ArtworkLimitMin:    defaultArtworkLimitMin,
 	ArtworkLimitMax:    defaultArtworkLimitMax,
