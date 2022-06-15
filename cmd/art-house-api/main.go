@@ -51,7 +51,12 @@ func main() {
 	//Exhibition Routes
 	exhibitionHandler.RegisterRoutes(router)
 
-	server := cors.Default().Handler(router)
+	server := &http.Server{
+		Handler:      cors.Default().Handler(router),
+		Addr:         fmt.Sprintf("0.0.0.0:%v", config.Global.Port),
+		WriteTimeout: 15 * time.Second,
+		ReadTimeout:  15 * time.Second,
+	}
 	log.Println("API Started. Listening on", config.Global.Port)
-	log.Fatal(http.ListenAndServe(fmt.Sprint(":", config.Global.Port), server))
+	log.Fatal(server.ListenAndServe())
 }
