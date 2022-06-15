@@ -21,17 +21,21 @@ import (
 func main() {
 	config.LoadConfig()
 
-	ctx, _ := context.WithTimeout(context.Background(), 10*time.Second)
-	client, err := util.GetMongoClient(ctx, config.Global.MongoURI)
+	ctx, _ := context.WithTimeout(context.Background(), 30*time.Second)
+	client, err := util.GetMongoClient(ctx)
 	if err != nil {
 		log.Fatal(err)
 	}
 	defer client.Disconnect(ctx)
 	db := client.Database(config.Global.MongoDBName)
 
-	// TODO: migrate data
+	rdb := util.GetRedisClient()
 
-	artworkHandler := artwork.NewHandler(db)
+	// TODO: create app context to hold all the db and cache
+	artworkStore := artwork.NewStore(db)
+	artworkCache := artwork.NewCache(rdb, time.Minute)
+	artworkHandler := artwork.NewHandler(artworkStore, artworkCache)
+
 	artistHandler := artist.NewHandler(db)
 	exhibitionHandler := exhibition.NewHandler(db)
 
