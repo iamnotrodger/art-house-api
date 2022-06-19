@@ -25,7 +25,7 @@ func NewCache(client *redis.Client, expiration time.Duration) *Cache {
 }
 
 func (c *Cache) Get(ctx context.Context, artworkID string) (*model.Artwork, error) {
-	key := c.getKeyID(artworkID)
+	key := c.getKeyByID(artworkID)
 	val, err := c.client.Get(ctx, key).Result()
 	if err == redis.Nil {
 		return nil, nil
@@ -43,7 +43,7 @@ func (c *Cache) Get(ctx context.Context, artworkID string) (*model.Artwork, erro
 }
 
 func (c *Cache) GetMany(ctx context.Context, queryString string) ([]*model.Artwork, error) {
-	key := c.getKeyQuery(queryString)
+	key := c.getKeyByQuery(queryString)
 	val, err := c.client.Get(ctx, key).Result()
 	if err == redis.Nil {
 		return nil, nil
@@ -66,7 +66,7 @@ func (c *Cache) Set(ctx context.Context, artworkID string, artwork *model.Artwor
 		return err
 	}
 
-	key := c.getKeyID(artworkID)
+	key := c.getKeyByID(artworkID)
 	err = c.client.Set(ctx, key, artworkJson, c.expiration).Err()
 	return err
 }
@@ -77,15 +77,15 @@ func (c *Cache) SetMany(ctx context.Context, queryString string, artworks []*mod
 		return err
 	}
 
-	key := c.getKeyQuery(queryString)
+	key := c.getKeyByQuery(queryString)
 	err = c.client.Set(ctx, key, artworksJson, c.expiration).Err()
 	return err
 }
 
-func (c *Cache) getKeyID(artworkID string) string {
+func (c *Cache) getKeyByID(artworkID string) string {
 	return fmt.Sprintf("%s:%s", c.namespace, artworkID)
 }
 
-func (c *Cache) getKeyQuery(queryString string) string {
+func (c *Cache) getKeyByQuery(queryString string) string {
 	return fmt.Sprintf("%s?%s", c.namespace, queryString)
 }
