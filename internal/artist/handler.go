@@ -7,16 +7,15 @@ import (
 	"github.com/gorilla/mux"
 	"github.com/iamnotrodger/art-house-api/internal/query"
 	"github.com/iamnotrodger/art-house-api/internal/util"
-	"go.mongodb.org/mongo-driver/mongo"
 )
 
 type Handler struct {
 	store *Store
 }
 
-func NewHandler(db *mongo.Database) *Handler {
+func NewHandler(store *Store) *Handler {
 	return &Handler{
-		store: NewStore(db),
+		store: store,
 	}
 }
 

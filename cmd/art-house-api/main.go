@@ -36,7 +36,9 @@ func main() {
 	artworkCache := artwork.NewCache(rdb, time.Minute)
 	artworkHandler := artwork.NewHandler(artworkStore, artworkCache)
 
-	artistHandler := artist.NewHandler(db)
+	artistStore := artist.NewStore(db)
+	artistHandler := artist.NewHandler(artistStore)
+
 	exhibitionHandler := exhibition.NewHandler(db)
 
 	router := mux.NewRouter().StrictSlash(true)
