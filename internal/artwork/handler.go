@@ -58,7 +58,6 @@ func (h *Handler) GetMany(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 
 	queryString := r.URL.RawQuery
-
 	artworks, err := h.cache.GetMany(r.Context(), queryString)
 	if err != nil {
 		log.Println(err)
