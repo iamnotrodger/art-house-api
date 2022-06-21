@@ -37,7 +37,8 @@ func main() {
 	artworkHandler := artwork.NewHandler(artworkStore, artworkCache)
 
 	artistStore := artist.NewStore(db)
-	artistHandler := artist.NewHandler(artistStore)
+	artistCache := artist.NewCache(rdb, time.Minute)
+	artistHandler := artist.NewHandler(artistStore, artistCache)
 
 	exhibitionHandler := exhibition.NewHandler(db)
 
