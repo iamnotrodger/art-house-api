@@ -41,7 +41,8 @@ func main() {
 	artistHandler := artist.NewHandler(artistStore, artistCache)
 
 	exhibitionStore := exhibition.NewStore(db)
-	exhibitionHandler := exhibition.NewHandler(exhibitionStore)
+	exhibitionCache := exhibition.NewCache(rdb, time.Minute)
+	exhibitionHandler := exhibition.NewHandler(exhibitionStore, exhibitionCache)
 
 	router := mux.NewRouter().StrictSlash(true)
 	router.Use(middleware.LoggingMiddleware)
