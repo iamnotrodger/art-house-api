@@ -23,10 +23,10 @@ func NewHandler(store *Store, cache *Cache) *Handler {
 }
 
 func (h *Handler) RegisterRoutes(router *mux.Router) {
-	router.HandleFunc("/api/exhibition", h.GetMany).Methods("GET")
-	router.HandleFunc("/api/exhibition/{id}", h.Get).Methods("GET")
-	router.HandleFunc("/api/exhibition/{id}/artwork", h.GetArtworks).Methods("GET")
-	router.HandleFunc("/api/exhibition/{id}/artist", h.GetArtists).Methods("GET")
+	router.HandleFunc("/api/exhibitions", h.GetMany).Methods("GET")
+	router.HandleFunc("/api/exhibitions/{id}", h.Get).Methods("GET")
+	router.HandleFunc("/api/exhibitions/{id}/artworks", h.GetArtworks).Methods("GET")
+	router.HandleFunc("/api/exhibitions/{id}/artists", h.GetArtists).Methods("GET")
 }
 
 func (h *Handler) Get(w http.ResponseWriter, r *http.Request) {
